@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Excel文件上传</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+
+<body>
+
+<center>
+    <h2>请选择要导入的Excel文件，文件扩展名为".xls"或"xlsx"。</h2>
+    <p></p>
+    <form action="getExcelFileFromHtml" method="post" enctype="multipart/form-data">
+        文件:<input type="file" name="file"/>
+        <input type="submit" value="上传"/>
+    </form>
+
+    <h2>请选择要导入的Excel文件，文件扩展名为".xls"或"xlsx"。</h2>
+    <p></p>
+    <form action="deviceIdRegExcelValid" method="post" enctype="multipart/form-data">
+        文件:<input type="file" name="batchDeviceIdExcel"/>
+        userAccount：<input type="text" name="userAccount" />
+        <input type="submit" value="上传"/>
+    </form>
+
+</center>
+</body>
+</html>
+
+
