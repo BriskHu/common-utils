@@ -26,7 +26,7 @@ public class FileUploadController {
     public String uploadExcelFile() {
         LOGGER.debug("uploadFile");
 
-        return "/pages/uploadExcelFilePage";
+        return "/htmlpages/uploadExcelFilePage";
     }
 
     @ResponseBody
