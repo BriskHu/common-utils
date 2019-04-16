@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -15,11 +16,12 @@ import java.io.*;
  * @author Brisk Hu
  * created on 2019-03-25
  **/
+@Service
 public class FileUploadService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUploadService.class);
 
     /* ---------------------------------------- fileds ---------------------------------------- */
-    @Value("${}")
+//    @Value("${}")
     private String fileSavePath;
 
     @Autowired

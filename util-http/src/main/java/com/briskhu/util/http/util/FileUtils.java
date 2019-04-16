@@ -2,6 +2,7 @@ package com.briskhu.util.http.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
@@ -15,6 +16,7 @@ import java.io.IOException;
  * @author Brisk Hu
  * created on 2019-03-25
  **/
+@Component
 public class FileUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 

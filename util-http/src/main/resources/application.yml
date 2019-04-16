@@ -1,25 +1,10 @@
 spring:
   profiles:
     active: dev
+  application:
+    name: http-utils
 
-#\u4E0A\u4F20\u6587\u4EF6\u5927\u5C0F\u9650\u5236\u9ED8\u8BA4\u914D\u7F6E
-http:
-multipart:
-enabled: true
-max-file-size: 3MB
-
-#\u4E0A\u4F20\u6587\u4EF6\u9ED8\u8BA4\u5B58\u50A8\u8DEF\u5F84\u914D\u7F6E
-file:
-storepath: ./clientUploadFiles/
-
-
----
-spring:
-  profiles: dev
-    application:
-      name: debugging-platform
-
-  #thymeleaf\u914D\u7F6E
+  #thymeleaf config
   thymeleaf:
     prefix: classpath:/static/htmlpages/
     suffix: .html
@@ -33,3 +18,26 @@ spring:
         content:
           enabled: true
           paths: /**
+
+#the default size limit of upload files
+  http:
+    multipart:
+      enabled: true
+      max-file-size: 3MB
+
+# the default saved location of the upload files
+file:
+  storepath: ./clientUploadFiles/
+
+server:
+  port: 9001
+logging:
+  level:
+    com.briskhu.util.http: debug
+
+
+---
+spring:
+  profiles: dev
+
+
