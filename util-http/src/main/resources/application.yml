@@ -6,7 +6,7 @@ spring:
 
   #thymeleaf config
   thymeleaf:
-    prefix: classpath:/static/htmlpages/
+    prefix: classpath:/static/
     suffix: .html
     mode: HTML5
     encoding: UTF-8
@@ -27,7 +27,7 @@ spring:
 
 # the default saved location of the upload files
 file:
-  storepath: ./clientUploadFiles/
+  storepath: ./webUploadFiles/
 
 server:
   port: 9001

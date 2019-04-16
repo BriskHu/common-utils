@@ -21,7 +21,7 @@ public class FileUploadService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUploadService.class);
 
     /* ---------------------------------------- fileds ---------------------------------------- */
-//    @Value("${}")
+    @Value("${file.storepath}")
     private String fileSavePath;
 
     @Autowired
@@ -42,8 +42,8 @@ public class FileUploadService {
 
         if (!file.isEmpty()) {
             String saveFileName = file.getOriginalFilename();
-            String savePath = "D://" + saveFileName;
-            LOGGER.debug("savePath: " + savePath);
+            String savePath = fileSavePath + saveFileName;
+            LOGGER.debug("[saveFile] savePath: " + savePath);
             File saveFile = new File(savePath);
             if (!saveFile.getParentFile().exists()) {
                 saveFile.getParentFile().mkdirs();
@@ -105,7 +105,7 @@ public class FileUploadService {
 
         String originalName = file.getOriginalFilename();
         String filePath = fileSavePath;
-        String newName = fileUtils.renameFile(businessPrefix+originalName);
+        String newName = fileUtils.renameFile(businessPrefix + originalName);
         LOGGER.debug("读取存储路径:{}", filePath);
         try {
             fileUtils.storeFile(file.getBytes(), filePath, newName);

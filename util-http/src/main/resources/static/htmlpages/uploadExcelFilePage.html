@@ -3,6 +3,7 @@
 <head>
     <title>Excel文件上传</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!--<meta http-equiv="Access-Control-Allow-Origin" content="http://localhost:9001"/>  &lt;!&ndash; 设置可跨域访问的资源 &ndash;&gt;-->
     <link th:href="@{/layui/css/layui.css}" rel="stylesheet"/> <!-- 引入thymeleaf格式 -->
 </head>
 
@@ -18,16 +19,33 @@
         </fieldset>
 
         <!-- 基于form的html原生同时传文件和字段的方式 -->
-        <h2>请选择要导入的Excel文件，文件扩展名为".xls"或"xlsx"。</h2>
-        <p></p>
-        <form action="deviceIdRegExcelValid" method="post" enctype="multipart/form-data">
-            文件:<input type="file" name="batchDeviceIdExcel"/>
-            userAccount：<input type="text" name="userAccount" />
-            <input type="submit" value="上传"/>
-        </form>
+        <fieldset class="layui-elem-quote layui-field-title" style="margin-top: 50px;">
+            <legend>
+                基于form的html原生同时传文件和字段的方式
+            </legend>
+            <legend>
+                请选择要导入的Excel文件，文件扩展名为".xls"或"xlsx"。
+            </legend>
+        </fieldset>
 
+        <div style="margin-left: auto; margin-right: auto; text-align: center">
+            <form action="uploadFileAndField" method="post" enctype="multipart/form-data">
+                userAccount：<input type="text" name="userAccount" />
+                文件:<input type="file" name="excelFile"/>
+                <input type="submit" value="上传"/>
+            </form>
+        </div>
+
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+            <legend>
+                采用layui的方式上传文件
+            </legend>
+            <legend>
+                请选择要导入的Excel文件，文件扩展名为".xls"或"xlsx"。
+            </legend>
+        </fieldset>
         <!-- 采用layui的方式上传文件 -->
-        <button type="button" class="layui-btn excelFile">
+        <button type="button" class="layui-btn layuiExcelFile">
             <i class="layui-icon center-pill">&#xe67c;</i>上传文件
         </button>
     </div>
@@ -42,11 +60,29 @@
 
             // execute instance
             var uploadInst = upload_var.render({
-                elem: '.excelFile',     //bind element
-                url: 'http:127.0.0.1:9001/file/upload/',    // controller address method
-            })
-        })
+                elem: '.layuiExcelFile',     //bind element
+                url: 'http://127.0.0.1:9001/file/getExcelFileFromHtml',    // controller address method
+                accept: 'file',
+                size: '30720',    //kb
 
+                before: function(){
+                    console.log('接口地址：' + this.url, this.item, {tips: 1});
+                },
+
+                done: function (res) {
+                    console.log(res.toString());
+                    if (res == "success") {
+                        alert("上传成功");
+                    }else {
+                        alert(res.message);
+                    }
+                },
+
+                error: function () {
+                    alert("上传出错");
+                }
+            }); // render method
+        }); // use method
     </script>
 
 </body>
