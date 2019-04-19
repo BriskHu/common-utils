@@ -11,6 +11,7 @@
     <modules>
         <module>util-http</module>
         <module>util-db-relation</module>
+        <module>util-excel</module>
     </modules>
 
     <parent>
