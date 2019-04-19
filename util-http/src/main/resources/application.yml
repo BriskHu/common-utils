@@ -22,10 +22,14 @@ spring:
           paths: /**
 
 #the default size limit of upload files
-  http:
+#  http:
+#    multipart:
+#      enabled: true
+#      max-file-size: 3MB
+  servlet:
     multipart:
-      enabled: true
       max-file-size: 3MB
+      enabled: true
 
 # the default saved location of the upload files
 file:
