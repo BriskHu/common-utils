@@ -12,6 +12,7 @@
         <module>util-http</module>
         <module>util-db-relation</module>
         <module>util-excel</module>
+        <module>util-date</module>
     </modules>
 
     <parent>
