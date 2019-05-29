@@ -22,7 +22,7 @@ public class WeekDateUtilTest {
         System.out.println("Test monday...");
 
         Date date = new Date();
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(DateConstants.TimeConcerned.TIMEZONE_SHANGHAI.getName()));
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(DateConstants.TIMEZONE_SHANGHAI));
 
         for (int i=0; i<10; i++){
             date = DateStringConvertor.strToDate("2019-01-0"+i, DateStringConvertor.DATE_FORMAT_DAY);
@@ -45,7 +45,7 @@ public class WeekDateUtilTest {
     public void getSunday(){
         System.out.println("Test sunday...");
         Date date = new Date();
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(DateConstants.TimeConcerned.TIMEZONE_SHANGHAI.getName()));
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(DateConstants.TIMEZONE_SHANGHAI));
 
         for (int i=0; i<10; i++){
             date = DateStringConvertor.strToDate("2019-01-0"+i, DateStringConvertor.DATE_FORMAT_DAY);
