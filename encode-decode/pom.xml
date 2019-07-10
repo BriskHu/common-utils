@@ -49,6 +49,11 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
     </dependencies>
 
 
@@ -94,7 +99,7 @@
                     <!--</descriptorRefs>-->
                     <!--<archive>-->
                         <!--<manifest>-->
-                            <!--<mainClass>com.briskhu.aesutil.AESUtilP7</mainClass>-->
+                            <!--<mainClass>com.briskhu.aesutil.AesUtil1</mainClass>-->
                         <!--</manifest>-->
                     <!--</archive>-->
                 <!--</configuration>-->
