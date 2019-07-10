@@ -13,6 +13,8 @@
         <module>util-db-relation</module>
         <module>util-excel</module>
         <module>util-date</module>
+        <module>dev-doc</module>
+        <module>encode-decode</module>
     </modules>
 
     <parent>
