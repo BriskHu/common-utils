@@ -15,6 +15,7 @@
         <module>util-date</module>
         <module>dev-doc</module>
         <module>encode-decode</module>
+        <module>util-data-proceeding</module>
     </modules>
 
     <parent>
