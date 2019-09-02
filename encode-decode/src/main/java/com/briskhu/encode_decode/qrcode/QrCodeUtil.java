@@ -17,7 +17,8 @@ import java.util.Hashtable;
 
 /**
  * 二维码工具类<p/>
- *
+ * 参考资料;https://blog.csdn.net/jam_fanatic/article/details/82818857。
+ * https://www.cnblogs.com/pcheng/p/7544553.html。
  * @author Brisk Hu
  * created on 2019-09-02
  **/
