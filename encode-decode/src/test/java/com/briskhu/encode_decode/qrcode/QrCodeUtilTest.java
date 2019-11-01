@@ -45,5 +45,24 @@ public class QrCodeUtilTest {
         System.out.println("decryptText2: " + decryptText);
     }
 
+    /**
+     * 广东电信小翼管家App控制机顶盒-南京智家联调
+     * 机顶盒信息
+     * 广东 encrypted: ubZx7Ye9hAISI007tkA5PQ4bW4zDYfeuEGG1mYdtgN89Jai0H1ANHcRz675TBVXN/YWR6QKrfeoykSlT7sttpOB73Lt8DCxvjmjiGB8h+WoyA/bqE7yTN0PlG1hBxsrXyKzFJ9nnBZ8Pw4UIX0rLueAk8SW1qoruJ4srVfwkmAg=
+     * 广东 decrypted: {"boxtype": 2,"clientid": "","areano": "440000","mac": "288cb827ac86","stbid": "EB100499007037300000288CB827AC86"}     * @throws Exception
+     */
+    @Test
+    public void guangDongXiaoYi20191029() throws Exception {
+        String text = "ubZx7Ye9hAISI007tkA5PQ4bW4zDYfeuEGG1mYdtgN89Jai0H1ANHcRz675TBVXN/YWR6QKrfeoykSlT7sttpOB73Lt8DCxvjmjiGB8h+WoyA/bqE7yTN0PlG1hBxsrXyKzFJ9nnBZ8Pw4UIX0rLueAk8SW1qoruJ4srVfwkmAg=";
+        String resultPath = "C:\\Users\\Administrator\\Desktop\\GD-288cb827ac86-QR20191030.jpg";
 
+        QrCodeUtil.encode(text, resultPath);
+
+        String decryptText = QrCodeUtil.decode(resultPath);
+        System.out.println("local QR decrypt: " + decryptText);
+
+        String webQrPath = "C:\\Users\\Administrator\\Desktop\\web-20191030.png";
+        decryptText = QrCodeUtil.decode(webQrPath);
+        System.out.println("web QR decrypt: " + decryptText);
+    }
 }

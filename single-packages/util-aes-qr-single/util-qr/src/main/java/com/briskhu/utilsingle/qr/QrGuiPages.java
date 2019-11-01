@@ -14,8 +14,8 @@ import java.io.File;
  * @author Brisk Hu
  * created on 2019-10-30
  **/
-public class GuiPages {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GuiPages.class);
+public class QrGuiPages {
+    private static final Logger LOGGER = LoggerFactory.getLogger(QrGuiPages.class);
 
     /* ---------------------------------------- fileds ---------------------------------------- */
     private String text;
@@ -458,9 +458,9 @@ public class GuiPages {
     }
 
     public static void main(String[] args) {
-        GuiPages guiPages = new GuiPages();
+        QrGuiPages qrGuiPages = new QrGuiPages();
 
-        guiPages.createQrPageByBox();
+        qrGuiPages.createQrPageByBox();
     }
 }
 

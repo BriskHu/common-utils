@@ -1,4 +1,4 @@
-package com.briskhu.encode_decode.qrcode;
+package com.briskhu.utilsingle.qr;
 
 import com.google.zxing.*;
 import com.google.zxing.common.BitMatrix;

@@ -16,8 +16,8 @@ import java.io.File;
  * @author Brisk Hu
  * created on 2019-10-30
  **/
-public class GuiPagesTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GuiPagesTest.class);
+public class QrGuiPagesTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(QrGuiPagesTest.class);
 
     /* ---------------------------------------- fileds ---------------------------------------- */
     private String text;
@@ -52,7 +52,7 @@ public class GuiPagesTest {
 
     @Test
     public void fileName() {
-        GuiPagesTest test = new GuiPagesTest();
+        QrGuiPagesTest test = new QrGuiPagesTest();
         test.directory = DEFAULT_PATH;
         test.filename = "test.txt";
         System.out.println(test.filename);
@@ -539,12 +539,12 @@ public class GuiPagesTest {
     }
 
     public static void main(String[] args) {
-        GuiPages guiPages = new GuiPages();
-//        guiPages.createQrPageByGridBag();
+        QrGuiPages qrGuiPages = new QrGuiPages();
+//        qrGuiPages.createQrPageByGridBag();
 
-//        guiPages.createQrPageByGroup();
-//        guiPages.createQrPageByBox();
-        guiPages.createQrPageByBox();
+//        qrGuiPages.createQrPageByGroup();
+//        qrGuiPages.createQrPageByBox();
+        qrGuiPages.createQrPageByBox();
     }
 
 

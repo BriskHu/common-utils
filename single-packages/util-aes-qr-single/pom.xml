@@ -7,6 +7,15 @@
     <groupId>com.briskhu</groupId>
     <artifactId>util-aes-qr-single</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+
+    <modules>
+        <module>util-qr</module>
+        <module>util-aes</module>
+        <module>util-aes-qr</module>
+        <module>common-jgui</module>
+    </modules>
 
 
 </project>
