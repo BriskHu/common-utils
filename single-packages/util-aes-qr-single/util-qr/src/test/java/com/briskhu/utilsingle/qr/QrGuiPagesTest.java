@@ -232,7 +232,7 @@ public class QrGuiPagesTest {
         col1.addComponent(textLabel).addComponent(textField);
         layout.setVerticalGroup(col1);
 //
-//        dirLabel = initLabel("保存路径", 20);
+//        dirLabel = init("保存路径", 20);
 //        dirBtn = initButton("dirBtn", DIR_HINT, 20, new ActionListener() {
 //            @Override
 //            public void actionPerformed(ActionEvent e) {
@@ -245,8 +245,8 @@ public class QrGuiPagesTest {
 //        layout.setHorizontalGroup(row2);
 
 
-//        fileLabel = initLabel("文件名称", 20);
-//        fileField = initTextField("fileField", 500, 20, FILE_HINT);
+//        fileLabel = init("文件名称", 20);
+//        fileField = operation("fileField", 500, 20, FILE_HINT);
 //        createQrBtn = initButton("createQrBtn", CREATE_QR_HINT, 20, new ActionListener() {
 //            @Override
 //            public void actionPerformed(ActionEvent e) {

@@ -1,5 +1,11 @@
 package com.briskhu.utilsingle.qr;
 
+import com.briskhu.common.jgui.algorithm.Geometry;
+import com.briskhu.common.jgui.operation.Button;
+import com.briskhu.common.jgui.operation.Frame;
+import com.briskhu.common.jgui.operation.Label;
+import com.briskhu.common.jgui.operation.Panel;
+import com.briskhu.common.jgui.operation.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +60,6 @@ public class QrGuiPages {
     private JPanel row4Panel = null;
 
 
-
     /* ---------------------------------------- methods ---------------------------------------- */
     public void chooseOperationPage() {
         JFrame jFrame = new JFrame("二维码生成工具");
@@ -65,7 +70,7 @@ public class QrGuiPages {
 
 
     public void createQrPageByBox() {
-        jFrame = initFrame("生成二维码", 800, 800);
+        jFrame = Frame.init("生成二维码", 800, 800);
 
         row1Panel = createRow1Panel("row1Panel");
         row2Panel = createRow2Panel("row2Panel");
@@ -90,18 +95,18 @@ public class QrGuiPages {
         panel.add(row2Panel);
         panel.add(row3Panel);
 //        jFrame.pack();
-        refreshFramd(jFrame, panel);
+        Frame.refresh(jFrame, panel);
 
         jFrame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 super.componentResized(e);
-                System.out.println("centerX=" + getFrameCenter(jFrame).getWidth() + ", centerY=" + getFrameCenter(jFrame).getHeight());
+                System.out.println("centerX=" + Geometry.getFrameCenter(jFrame).getWidth() + ", centerY=" + Geometry.getFrameCenter(jFrame).getHeight());
 //                row4Panel.setLocation((int) getFrameCenter(jFrame).getWidth(), (int) getFrameCenter(jFrame).getHeight());
-                row4Panel.setLocation((int) getCurrentCenter(panel).getWidth(), (int) getCurrentCenter(panel).getHeight());
+                row4Panel.setLocation((int) Geometry.getPanelCenter(panel).getWidth(), (int) Geometry.getPanelCenter(panel).getHeight());
                 row4Panel.setSize(imgWidth, imgHeight);
                 panel.add(row4Panel);
-                refreshFramd(jFrame, panel);
+                Frame.refresh(jFrame, panel);
                 super.componentResized(e);
             }
         });
@@ -111,54 +116,23 @@ public class QrGuiPages {
     }
 
 
-    /**
-     * 初始化窗口
-     *
-     * @param frameName
-     * @param width
-     * @param height
-     * @return
-     */
-    private JFrame initFrame(String frameName, int width, int height) {
-        JFrame frame = new JFrame(frameName);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setSize(width, height);
-
-        return frame;
-    }
-
     private JPanel createRow1Panel(String panelName) {
-        textLabel = initLabel("原始文本", 20);
-        textField = initTextField("originText", 36, 20, TEXT_HINT);
+        textLabel = Label.init("原始文本", 20);
+        textField = TextField.init("originText", 36, 20, TEXT_HINT);
 
         Box box = Box.createHorizontalBox();
         box.add(textLabel);
         box.add(Box.createHorizontalStrut(10));
         box.add(textField);
 
-        return initPanel(panelName, 200, 5, box);
+        return Panel.initForBox(panelName, 200, 5, box);
     }
 
-    private JPanel initPanel(String panelName, int width, int height) {
-        JPanel result = new JPanel();
-        result.setName(panelName);
-        result.setPreferredSize(new Dimension(width, height));
-//        result.setSize(width, height);
-        return result;
-    }
 
-    private JPanel initPanel(String panelName, int width, int height, Box box) {
-        JPanel result = initPanel(panelName, width, height);
-//        result.setSize(width, height);
-        result.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-        result.add(box);
-        return result;
-    }
 
     private JPanel createRow2Panel(String panelName) {
-        dirLabel = initLabel("保存路径", 20);
-        dirBtn = initButton("dirBtn", DIR_HINT, 20, new ActionListener() {
+        dirLabel = Label.init("保存路径", 20);
+        dirBtn = Button.init("dirBtn", DIR_HINT, 20, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 LOGGER.info("[actionPerformed] Button {} has been pressed", dirBtn.getName());
@@ -171,13 +145,13 @@ public class QrGuiPages {
         box.add(Box.createHorizontalStrut(10));
         box.add(dirBtn);
 
-        return initPanel(panelName, 200, 10, box);
+        return Panel.initForBox(panelName, 200, 10, box);
     }
 
     private JPanel createRow3Panel(String panelName) {
-        fileLabel = initLabel("文件名称", 20);
-        fileField = initTextField("fileField", 20, 20, FILE_HINT);
-        createQrBtn = initButton("createQrBtn", CREATE_QR_HINT, 20, new ActionListener() {
+        fileLabel = Label.init("文件名称", 20);
+        fileField = TextField.init("fileField", 20, 20, FILE_HINT);
+        createQrBtn = Button.init("createQrBtn", CREATE_QR_HINT, 20, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -196,145 +170,16 @@ public class QrGuiPages {
         box.add(Box.createHorizontalStrut(118));
         box.add(createQrBtn);
 
-        return initPanel(panelName, 200, 10, box);
+        return Panel.initForBox(panelName, 200, 10, box);
     }
 
     private JPanel createRow4Panel(String panelName) {
-        imageLabel = initImageLabel("qrImgLabel", "二维码图片", imgWidth, imgHeight, null);
-
-        JPanel panel = initPanel(panelName, imgWidth, imgHeight);
+        imageLabel = Label.initImageLabel("qrImgLabel", "二维码图片", imgWidth, imgHeight, null);
+        JPanel panel = Panel.init(panelName, imgWidth, imgHeight);
         panel.setLayout(new FlowLayout(FlowLayout.CENTER));
         panel.add(imageLabel);
-        panel.validate();
 
         return panel;
-    }
-
-    /**
-     * 初始化标签
-     *
-     * @param labelStr
-     * @param fontSize
-     * @return
-     */
-    private JLabel initLabel(String labelStr, int fontSize) {
-        JLabel label = new JLabel(labelStr);
-        label.setFont(new Font(null, Font.PLAIN, fontSize));
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setVerticalAlignment(SwingConstants.CENTER);
-
-        return label;
-    }
-
-    /**
-     * 初始化文本框
-     *
-     * @param fieldName
-     * @param columns
-     * @param fontSize
-     * @param hint
-     * @return
-     */
-    private JTextField initTextField(String fieldName, int columns, int fontSize, String hint) {
-        JTextField textField = new JTextField(columns);
-        textField.setName(fieldName);
-        textField.setFont(new Font(null, Font.PLAIN, fontSize));
-        textField.setText(hint);
-        textField.setHorizontalAlignment(SwingConstants.CENTER);
-
-        return textField;
-    }
-
-    /**
-     * 初始化按钮
-     *
-     * @param btnName
-     * @param btnLabel
-     * @param fontSize
-     * @param actionListener
-     * @return
-     */
-    private JButton initButton(String btnName, String btnLabel, int fontSize, ActionListener actionListener) {
-        JButton button = new JButton(btnLabel);
-        button.setFont(new Font(null, Font.PLAIN, fontSize));
-        button.setName(btnName);
-        button.addActionListener(actionListener);
-
-        return button;
-    }
-
-    /**
-     * 初始化图片标签
-     *
-     * @param labelName
-     * @param width
-     * @param height
-     * @param imageFile
-     * @return
-     */
-    private JLabel initImageLabel(String labelName, String hint, int width, int height, String imageFile) {
-        JLabel result = new JLabel();
-        result.setName(labelName);
-        result.setPreferredSize(new Dimension(width, height));
-//        result.setSize(width, height);
-        result.setText(hint);
-
-        ImageIcon imgIcon = new ImageIcon(imageFile);
-        imgIcon.setImage(imgIcon.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
-        result.setIcon(imgIcon);
-
-        return result;
-    }
-
-
-    private void refreshFramd(JFrame frame) {
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
-
-    private void refreshFramd(JFrame frame, JPanel panel) {
-//        frame.setVisible(false);
-        frame.setContentPane(panel);
-        refreshFramd(frame);
-    }
-
-    /**
-     * 计算窗口中心点坐标
-     *
-     * @param frame
-     * @return 坐标值为double型
-     */
-    private Dimension getFrameCenter(JFrame frame) {
-        Dimension result = new Dimension();
-
-        System.out.println("frame: " + frame.getWidth() + "," + frame.getHeight());
-        double centerX = (frame.getWidth() + frame.getX()) / 2;
-        double centerY = (frame.getHeight() + frame.getY()) / 2;
-        result.setSize(centerX, centerY);
-
-        return result;
-    }
-
-    /**
-     * 计算窗口当前大小的中心点坐标
-     *
-     * @param panel
-     * @return 坐标值为double型
-     */
-    private Dimension getCurrentCenter(JPanel panel) {
-        Dimension result = new Dimension();
-
-        double centerX = (panel.getWidth() + panel.getX()) / 2;
-        double centerY = (panel.getHeight() + panel.getY()) / 2;
-        result.setSize(centerX, centerY);
-
-        return result;
-    }
-
-    private void setLabel(JLabel label, int fontSize) {
-        label.setFont(new Font(null, Font.PLAIN, fontSize));
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setVerticalAlignment(SwingConstants.CENTER);
     }
 
 
@@ -359,15 +204,13 @@ public class QrGuiPages {
             this.directory = DEFAULT_PATH;
         }
 
-        choosedDirLabel = new JLabel();
-        setLabel(choosedDirLabel, 20);
-        choosedDirLabel.setText(directory);
+        choosedDirLabel = Label.init(directory, 20);
         panel.remove(dirBtn);
         panel.add(choosedDirLabel, 3);
-        refreshFramd(jFrame, panel);
+        Frame.refresh(jFrame, panel);
     }
 
-    private void initDirChooser(JFileChooser dirChooser, int fontSize){
+    private void initDirChooser(JFileChooser dirChooser, int fontSize) {
         dirChooser.setFont(new Font(null, Font.PLAIN, fontSize));
         dirChooser.setPreferredSize(new Dimension(500, 500));
         dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -382,40 +225,23 @@ public class QrGuiPages {
             this.directory = DEFAULT_PATH;
         }
 
-        if (choosedDirLabel == null){
-            choosedDirLabel = new JLabel();
-            setLabel(choosedDirLabel, 20);
+        if (choosedDirLabel == null) {
+            choosedDirLabel = Label.init(directory, 20);
             choosedDirLabel.setPreferredSize(new Dimension(850, 20));
-            choosedDirLabel.setText(directory);
             row2Panel = (JPanel) panel.getComponent(1);
-            Box box = ((Box)row2Panel.getComponent(0));
+            Box box = ((Box) row2Panel.getComponent(0));
             box.add(choosedDirLabel, 2);
             box.add(Box.createHorizontalStrut(20), 3);
             row2Panel.remove(0);
             row2Panel.add(box);
-            reloadChildren(panel, row1Panel, row2Panel, row3Panel, row4Panel);
-        }
-        else {
+            Panel.reloadChildren(panel, row1Panel, row2Panel, row3Panel, row4Panel);
+        } else {
             choosedDirLabel.setText(directory);
             row2Panel.validate();
         }
 
-        refreshFramd(jFrame, panel);
+        Frame.refresh(jFrame, panel);
     }
-
-    private void reloadChildren(JPanel rootPanel, JPanel... childrens){
-        for (int i=0; i<childrens.length; i++){
-            rootPanel.remove(childrens[i]);
-            rootPanel.add(childrens[i]);
-        }
-    }
-
-    private void setButton(JButton button, String btnName, int fontSize, ActionListener actionListener) {
-        button.setFont(new Font(null, Font.PLAIN, fontSize));
-        button.setName(btnName);
-        button.addActionListener(actionListener);
-    }
-
 
     private void doCreateQrBtn() throws Exception {
         if (checkParams()) {
@@ -425,8 +251,10 @@ public class QrGuiPages {
 //                System.out.println(panel.getComponent(i));
 //            }
 
-            JLabel imgLabel = (JLabel) row4Panel.getComponent(0);
-            imgLabel.setIcon(new ImageIcon(resultFile));
+            row4Panel.remove(0);
+            imageLabel = null;
+            imageLabel = Label.initImageLabel("qrImgLabel", imgWidth, imgHeight, resultFile);
+            row4Panel.add(imageLabel);
             row4Panel.validate();
         }
     }
@@ -444,7 +272,7 @@ public class QrGuiPages {
 
         text = textField.getText();
         filename = fileField.getText();
-        resultFile = directory + File.separator + fileField;
+        resultFile = directory + File.separator + filename;
         LOGGER.info("[checkParams] text = {}, resultFile ={}", text, resultFile);
 
         return true;
