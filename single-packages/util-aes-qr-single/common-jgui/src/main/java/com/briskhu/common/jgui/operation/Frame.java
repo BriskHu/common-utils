@@ -4,6 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 
 /**
  * 窗口的基本操作工具类<p/>
@@ -71,6 +75,56 @@ public class Frame {
 //        frame.setVisible(false);
         frame.setContentPane(panel);
         refresh(frame);
+    }
+
+    public static void setWindowState(JFrame frame){
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        frame.addWindowStateListener(new WindowStateListener() {
+            @Override
+            public void windowStateChanged(WindowEvent e) {
+                LOGGER.debug("old={}, new={}", e.getOldState(), e.getNewState());
+
+                if (e.getNewState()==1 ||  e.getNewState()==7){
+                    LOGGER.debug("min: old={}, new={}", e.getOldState(), e.getNewState());
+                }
+                else if (e.getNewState()==0){
+                    LOGGER.debug("restore: old={}, new={}", e.getOldState(), e.getNewState());
+                    frame.setVisible(false);
+                    frame.setPreferredSize(new Dimension(800, 800));
+                    frame.pack();
+                    refresh(frame);
+                }
+                else if(e.getNewState()==6){
+                    LOGGER.debug("restore: old={}, new={}", e.getOldState(), e.getNewState());
+                }
+            }
+        });
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowActivated(WindowEvent e) {
+                LOGGER.debug("[windowActivated] old={}, new={}", e.getOldState(), e.getNewState());
+            }
+
+            @Override
+            public void windowStateChanged(WindowEvent e) {
+                LOGGER.debug("[windowStateChanged] old={}, new={}", e.getOldState(), e.getNewState());
+
+                if (e.getNewState()==1 ||  e.getNewState()==7){
+                    LOGGER.debug("min: old={}, new={}", e.getOldState(), e.getNewState());
+                }
+                else if (e.getNewState()==0){
+                    LOGGER.debug("restore: old={}, new={}", e.getOldState(), e.getNewState());
+                    frame.setVisible(false);
+                    frame.setPreferredSize(new Dimension(800, 800));
+                    frame.pack();
+                    refresh(frame);
+                }
+                else if(e.getNewState()==6){
+                    LOGGER.debug("restore: old={}, new={}", e.getOldState(), e.getNewState());
+                }
+            }
+
+        });
     }
 
 }

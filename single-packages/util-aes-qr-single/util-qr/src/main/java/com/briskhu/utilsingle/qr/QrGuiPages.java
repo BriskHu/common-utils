@@ -1,6 +1,7 @@
 package com.briskhu.utilsingle.qr;
 
 import com.briskhu.common.jgui.algorithm.Geometry;
+import com.briskhu.common.jgui.operation.*;
 import com.briskhu.common.jgui.operation.Button;
 import com.briskhu.common.jgui.operation.Frame;
 import com.briskhu.common.jgui.operation.Label;
@@ -27,6 +28,7 @@ public class QrGuiPages {
     private String text;
     private String directory;
     private String filename;
+    private String fileExt = ".jpg";
     private final String DEFAULT_PATH = "C:\\Users\\Administrator\\Desktop";
     private String resultFile;
 
@@ -45,6 +47,7 @@ public class QrGuiPages {
     private JLabel fileLabel = null;
     private JTextField fileField = null;
     private final String FILE_HINT = "请指定二维码图片的名称";
+    private JComboBox<String> imgFormat = null;
 
     private JButton createQrBtn = null;
     private final String CREATE_QR_HINT = "生成二维码";
@@ -81,38 +84,49 @@ public class QrGuiPages {
 //        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 //        panel.setLayout(new GridLayout());
         panel = new JPanel(null);
-        System.out.println("x=" + panel.getX() + ", y=" + panel.getY());
+        LOGGER.debug("x=" + panel.getX() + ", y=" + panel.getY());
         row1Panel.setLocation(panel.getX() + 10, panel.getY() + 10);
         row1Panel.setSize(1000, 50);
         row2Panel.setLocation(10, 60);
         row2Panel.setSize(1000, 50);
         row3Panel.setLocation(10, 120);
         row3Panel.setSize(1000, 50);
+        row1Panel.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+        row2Panel.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+        row3Panel.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+
 
 //        panel.invalidate();
-        System.out.println("panelW=" + panel.getWidth() + ", panelH=" + panel.getHeight());
+        LOGGER.debug("panelW=" + panel.getWidth() + ", panelH=" + panel.getHeight());
         panel.add(row1Panel);
         panel.add(row2Panel);
         panel.add(row3Panel);
 //        jFrame.pack();
         Frame.refresh(jFrame, panel);
 
+        Frame.setWindowState(jFrame);
         jFrame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                super.componentResized(e);
-                System.out.println("centerX=" + Geometry.getFrameCenter(jFrame).getWidth() + ", centerY=" + Geometry.getFrameCenter(jFrame).getHeight());
+                jFrame.setResizable(true);
+                jFrame.setPreferredSize(new Dimension(jFrame.getWidth(), jFrame.getHeight()));
+                jFrame.pack();
+                LOGGER.debug("centerX=" + Geometry.getFrameCenter(jFrame).getWidth() + ", centerY=" + Geometry.getFrameCenter(jFrame).getHeight());
 //                row4Panel.setLocation((int) getFrameCenter(jFrame).getWidth(), (int) getFrameCenter(jFrame).getHeight());
                 row4Panel.setLocation((int) Geometry.getPanelCenter(panel).getWidth(), (int) Geometry.getPanelCenter(panel).getHeight());
                 row4Panel.setSize(imgWidth, imgHeight);
+                row4Panel.setBorder(BorderFactory.createLineBorder(Color.GREEN));
                 panel.add(row4Panel);
-                Frame.refresh(jFrame, panel);
-                super.componentResized(e);
+//                Frame.refresh(jFrame, panel);
+                jFrame.setContentPane(panel);
+
+                jFrame.setVisible(false);
+                jFrame.setVisible(true);
             }
         });
 
-        System.out.println("panelW=" + panel.getWidth() + ", panelH=" + panel.getHeight());
-        System.out.println("frameX=" + jFrame.getX() + ", frameY=" + jFrame.getY());
+        LOGGER.debug("panelW=" + panel.getWidth() + ", panelH=" + panel.getHeight());
+        LOGGER.debug("frameX=" + jFrame.getX() + ", frameY=" + jFrame.getY());
     }
 
 
@@ -139,7 +153,7 @@ public class QrGuiPages {
                 doDirChoose();
             }
         });
-        dirBtn.setPreferredSize(new Dimension(300, 40));
+        dirBtn.setPreferredSize(new Dimension(380, 40));
         Box box = Box.createHorizontalBox();
         box.add(dirLabel);
         box.add(Box.createHorizontalStrut(10));
@@ -150,7 +164,7 @@ public class QrGuiPages {
 
     private JPanel createRow3Panel(String panelName) {
         fileLabel = Label.init("文件名称", 20);
-        fileField = TextField.init("fileField", 20, 20, FILE_HINT);
+        fileField = TextField.init("fileField", 15, 20, FILE_HINT);
         createQrBtn = Button.init("createQrBtn", CREATE_QR_HINT, 20, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -163,11 +177,20 @@ public class QrGuiPages {
             }
         });
 
+        String[] imgFormats = new String[]{".jpg", ".png", ".jpeg"};
+        imgFormat = ComboBox.initForString("imgFormat", 20, new Dimension(80, 10), imgFormats, new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                fileExt = (String) imgFormat.getSelectedItem();
+            }
+        });
         Box box = Box.createHorizontalBox();
         box.add(fileLabel);
         box.add(Box.createHorizontalStrut(10));
         box.add(fileField);
-        box.add(Box.createHorizontalStrut(118));
+        box.add(Box.createHorizontalStrut(10));
+        box.add(imgFormat);
+        box.add(Box.createHorizontalStrut(108));
         box.add(createQrBtn);
 
         return Panel.initForBox(panelName, 200, 10, box);
@@ -185,29 +208,7 @@ public class QrGuiPages {
 
     private void doDirChoose() {
         dirChooser = new JFileChooser(DEFAULT_PATH);
-//        setDirChooser(dirChooser, 20);
         initDirChooser(dirChooser, 20);
-    }
-
-    private void setDirChooser(JFileChooser dirChooser, int fontSize) {
-        dirChooser.setFont(new Font(null, Font.PLAIN, fontSize));
-        dirChooser.setSize(500, 500);
-        dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-        dirChooser.setDialogTitle(DIR_HINT);
-        dirChooser.setApproveButtonText("确定");
-        int result = dirChooser.showOpenDialog(dirChooser);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            this.directory = dirChooser.getSelectedFile().getAbsolutePath();
-            LOGGER.info("选择的二维码图片保存路径为：{}", directory);
-        } else {
-            this.directory = DEFAULT_PATH;
-        }
-
-        choosedDirLabel = Label.init(directory, 20);
-        panel.remove(dirBtn);
-        panel.add(choosedDirLabel, 3);
-        Frame.refresh(jFrame, panel);
     }
 
     private void initDirChooser(JFileChooser dirChooser, int fontSize) {
@@ -248,7 +249,7 @@ public class QrGuiPages {
             QrCodeUtil.encode(text, resultFile);
             row4Panel = (JPanel) panel.getComponent(3);
 //            for (int i=0; i< panel.getComponents().length; i++){
-//                System.out.println(panel.getComponent(i));
+//                LOGGER.debug(panel.getComponent(i));
 //            }
 
             row4Panel.remove(0);
@@ -271,7 +272,7 @@ public class QrGuiPages {
         }
 
         text = textField.getText();
-        filename = fileField.getText();
+        filename = fileField.getText() + fileExt;
         resultFile = directory + File.separator + filename;
         LOGGER.info("[checkParams] text = {}, resultFile ={}", text, resultFile);
 

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 
 /**
@@ -29,7 +30,7 @@ public class Geometry {
     public static Dimension getFrameCenter(JFrame frame) {
         Dimension result = new Dimension();
 
-        System.out.println("frame: " + frame.getWidth() + "," + frame.getHeight());
+        LOGGER.debug("frame: " + frame.getWidth() + "," + frame.getHeight());
         double centerX = (frame.getWidth() + frame.getX()) / 2;
         double centerY = (frame.getHeight() + frame.getY()) / 2;
         result.setSize(centerX, centerY);
@@ -53,6 +54,19 @@ public class Geometry {
         return result;
     }
 
+    public static void putInCenter(JComponent container, JComponent target){
+        int x = (container.getWidth() - target.getWidth())/2;
+        int y = (container.getHeight() - target.getHeight())/2;
+
+        target.setLocation(new Point(x, y));
+    }
+
+
+    public static Border getPanelBorder(JPanel panel){
+        Border result = panel.getBorder();
+
+        return result;
+    }
 
 }
 

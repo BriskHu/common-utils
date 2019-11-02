@@ -37,10 +37,9 @@ public class AesQrGuiMain {
         tabbedPane.add("扫描二维码", createTabPanel("scanQr"));
 
         tabbedPane.addChangeListener(new ChangeListener() {
+            @Override
             public void stateChanged(ChangeEvent e) {
                 LOGGER.debug("当前选中的选项卡：" + tabbedPane.getSelectedIndex());
-                LOGGER.info("当前选中的选项卡：" + tabbedPane.getSelectedIndex());
-                System.out.println("当前选中的选项卡：" + tabbedPane.getSelectedIndex());
             }
         });
 
