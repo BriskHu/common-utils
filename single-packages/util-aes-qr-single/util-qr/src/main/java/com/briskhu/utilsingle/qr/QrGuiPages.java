@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
 
 
 /**
@@ -22,7 +21,7 @@ public class QrGuiPages {
     /* ---------------------------------------- fileds ---------------------------------------- */
     private final String FRAME_TITLE = "二维码生成和扫描工具";
     private int frameWidth = 800;
-    private int frameHeight = 830;
+    private int frameHeight = 900;
     private final String CREATE_QR_PAGE_TITLE = "生成二维码";
     private final String SCAN_QR_PAGE_TITLE = "扫描二维码";
 
