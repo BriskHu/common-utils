@@ -84,6 +84,8 @@ public class Label {
         JLabel result = new JLabel();
         result.setName(labelName);
         result.setPreferredSize(new Dimension(width, height));
+        result.setHorizontalAlignment(SwingConstants.CENTER);
+        result.setVerticalAlignment(SwingConstants.CENTER);
 //        result.setSize(width, height);
 
         ImageIcon imgIcon = new ImageIcon(imageFile);

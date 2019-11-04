@@ -50,7 +50,6 @@ public class GeometryTest {
         frame.setContentPane(panel);
         frame.setVisible(true);
 
-        System.out.println(Geometry.getPanelBorder(p1));
         System.out.println("p2:" + p2.getX()+","+p2.getY());
         System.out.println("p2 center:" + Geometry.getPanelCenter(p2));
         System.out.println("l2 size:" + l2.getSize());

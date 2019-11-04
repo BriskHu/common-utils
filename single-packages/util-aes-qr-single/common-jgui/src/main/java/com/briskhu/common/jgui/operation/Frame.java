@@ -58,10 +58,10 @@ public class Frame {
     }
 
     /**
-     * 刷新窗口
+     * 在桌面中心区域展示窗口
      * @param frame
      */
-    public static void refresh(JFrame frame) {
+    public static void showAtCenter(JFrame frame) {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
@@ -72,9 +72,8 @@ public class Frame {
      * @param panel
      */
     public static void refresh(JFrame frame, JPanel panel) {
-//        frame.setVisible(false);
         frame.setContentPane(panel);
-        refresh(frame);
+        frame.setVisible(true);
     }
 
     public static void setWindowState(JFrame frame){
@@ -82,48 +81,22 @@ public class Frame {
         frame.addWindowStateListener(new WindowStateListener() {
             @Override
             public void windowStateChanged(WindowEvent e) {
-                LOGGER.debug("old={}, new={}", e.getOldState(), e.getNewState());
-
-                if (e.getNewState()==1 ||  e.getNewState()==7){
-                    LOGGER.debug("min: old={}, new={}", e.getOldState(), e.getNewState());
-                }
-                else if (e.getNewState()==0){
-                    LOGGER.debug("restore: old={}, new={}", e.getOldState(), e.getNewState());
-                    frame.setVisible(false);
-                    frame.setPreferredSize(new Dimension(800, 800));
-                    frame.pack();
-                    refresh(frame);
-                }
-                else if(e.getNewState()==6){
-                    LOGGER.debug("restore: old={}, new={}", e.getOldState(), e.getNewState());
-                }
-            }
-        });
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowActivated(WindowEvent e) {
-                LOGGER.debug("[windowActivated] old={}, new={}", e.getOldState(), e.getNewState());
-            }
-
-            @Override
-            public void windowStateChanged(WindowEvent e) {
                 LOGGER.debug("[windowStateChanged] old={}, new={}", e.getOldState(), e.getNewState());
 
                 if (e.getNewState()==1 ||  e.getNewState()==7){
-                    LOGGER.debug("min: old={}, new={}", e.getOldState(), e.getNewState());
+                    LOGGER.debug("[windowStateChanged] min: old={}, new={}", e.getOldState(), e.getNewState());
                 }
                 else if (e.getNewState()==0){
-                    LOGGER.debug("restore: old={}, new={}", e.getOldState(), e.getNewState());
-                    frame.setVisible(false);
-                    frame.setPreferredSize(new Dimension(800, 800));
-                    frame.pack();
-                    refresh(frame);
+                    LOGGER.debug("[windowStateChanged] restore: old={}, new={}", e.getOldState(), e.getNewState());
+//                    frame.setVisible(false);
+//                    frame.setPreferredSize(new Dimension(800, 800));
+//                    frame.pack();
+//                    refresh(frame);
                 }
                 else if(e.getNewState()==6){
-                    LOGGER.debug("restore: old={}, new={}", e.getOldState(), e.getNewState());
+                    LOGGER.debug("[windowStateChanged] max: old={}, new={}", e.getOldState(), e.getNewState());
                 }
             }
-
         });
     }
 

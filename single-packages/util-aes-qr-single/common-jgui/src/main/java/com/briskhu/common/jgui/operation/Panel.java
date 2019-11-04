@@ -66,6 +66,16 @@ public class Panel {
         return result;
     }
 
+    /**
+     * 将组件添加到面板中
+     * @param panel
+     * @param components
+     */
+    public static void add(JPanel panel, JComponent... components){
+        for (int i=0; i<components.length; i++){
+            panel.add(components[i]);
+        }
+    }
 
 
     /**

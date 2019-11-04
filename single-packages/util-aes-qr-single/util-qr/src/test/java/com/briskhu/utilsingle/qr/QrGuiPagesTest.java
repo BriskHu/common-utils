@@ -540,11 +540,7 @@ public class QrGuiPagesTest {
 
     public static void main(String[] args) {
         QrGuiPages qrGuiPages = new QrGuiPages();
-//        qrGuiPages.createQrPageByGridBag();
 
-//        qrGuiPages.createQrPageByGroup();
-//        qrGuiPages.createQrPageByBox();
-        qrGuiPages.createQrPageByBox();
     }
 
 
