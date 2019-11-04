@@ -32,10 +32,8 @@ public class Frame {
      * @return
      */
     public static JFrame init(String frameTitle, String frameName, int width, int height) {
-        JFrame frame = new JFrame(frameTitle);
+        JFrame frame = init(frameTitle, width, height);
         frame.setName(frameName);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setSize(width, height);
 
         return frame;
     }
@@ -71,7 +69,7 @@ public class Frame {
      * @param frame
      * @param panel
      */
-    public static void refresh(JFrame frame, JPanel panel) {
+    public static void refresh(JFrame frame, Container panel) {
         frame.setContentPane(panel);
         frame.setVisible(true);
     }

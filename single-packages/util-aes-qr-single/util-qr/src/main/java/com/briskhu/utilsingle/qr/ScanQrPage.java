@@ -1,6 +1,5 @@
 package com.briskhu.utilsingle.qr;
 
-import com.briskhu.common.jgui.operation.*;
 import com.briskhu.common.jgui.operation.Button;
 import com.briskhu.common.jgui.operation.Frame;
 import com.briskhu.common.jgui.operation.Label;
@@ -9,7 +8,6 @@ import com.briskhu.common.jgui.operation.TextArea;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 /**
- * <p/>
+ * 扫描二维码的操作界面<p/>
  *
  * @author Brisk Hu
  * created on 2019-11-03

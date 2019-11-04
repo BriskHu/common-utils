@@ -1,15 +1,14 @@
 package com.briskhu.utilsingle.qr;
 
-import com.briskhu.common.jgui.algorithm.Geometry;
 import com.briskhu.common.jgui.operation.*;
 import com.briskhu.common.jgui.operation.Button;
 import com.briskhu.common.jgui.operation.Frame;
 import com.briskhu.common.jgui.operation.Label;
 import com.briskhu.common.jgui.operation.Panel;
 import com.briskhu.common.jgui.operation.TextField;
+import com.briskhu.common.jgui.other.OsTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,11 +29,32 @@ public class CreateQrPage {
 
     /* ---------------------------------------- fileds ---------------------------------------- */
     private String text;
-    private String directory = "C:\\Users\\Administrator\\Desktop";
+    private static String directory;
     private String filename;
     private String fileExt = ".jpg";
-    private final String DEFAULT_PATH = "C:\\Users\\Administrator\\Desktop";
+    private static final String DEFAULT_PATH;
     private String resultFile;
+
+    static {
+        OsTools.printOsInfo();
+        DEFAULT_PATH = OsTools.initDefaultDir();
+        File defaultDir = new File(DEFAULT_PATH);
+        if (defaultDir.exists()) {
+            directory = DEFAULT_PATH;
+        } else {
+            int tryTimes = 0;
+            while (!defaultDir.mkdir() && tryTimes < 3) {
+                defaultDir.mkdir();
+                tryTimes++;
+            }
+            if (tryTimes == 3) {
+                LOGGER.error("[static code] 3次创建默认文件夹均失败，退出程序");
+                System.exit(-1);
+            } else {
+                directory = DEFAULT_PATH;
+            }
+        }
+    }
 
     private JFrame jFrame = null;
     private String framTitle = "生成二维码";
@@ -81,6 +101,7 @@ public class CreateQrPage {
 
 
     /* ---------------------------------------- methods ---------------------------------------- */
+
     /**
      * 基于Box布局的页面
      */
@@ -117,6 +138,7 @@ public class CreateQrPage {
 
     /**
      * 生成二维码页面的面板
+     *
      * @return
      */
     public JPanel createQrPagePanel() {
@@ -144,7 +166,7 @@ public class CreateQrPage {
         row5Panel.setLocation(10, row4Panel.getY() + imgHeight + panelGap);
         row5Panel.setSize(textBarWidth, textBarHeight);
 
-        GuiDebugTools.printBorder(Color.GREEN, row1Panel, row2Panel, row3Panel, row4Panel, row5Panel);
+//        GuiDebugTools.printBorder(Color.GREEN, row1Panel, row2Panel, row3Panel, row4Panel, row5Panel);
         LOGGER.debug("[scanQrPagePanel] resultPanel: w = {}, h = {}", resultPanel.getWidth(), resultPanel.getHeight());
         Panel.add(resultPanel, row1Panel, row2Panel, row3Panel, row4Panel, row5Panel);
 
@@ -218,7 +240,6 @@ public class CreateQrPage {
 
     private JPanel createRow4Panel(String panelName) {
         imageLabel = Label.initImageLabel("qrImgLabel", IMG_HINT, imgWidth, imgHeight, null);
-        GuiDebugTools.printBorder(Color.RED, imageLabel);
         JPanel panel = Panel.init(panelName, imgWidth, imgHeight);
         panel.setLayout(new BorderLayout());
         panel.add(imageLabel, BorderLayout.CENTER);
