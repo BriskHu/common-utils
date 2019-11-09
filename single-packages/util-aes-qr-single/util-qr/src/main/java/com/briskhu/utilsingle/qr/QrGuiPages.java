@@ -1,12 +1,15 @@
 package com.briskhu.utilsingle.qr;
 
 import com.briskhu.common.jgui.operation.Frame;
+import com.briskhu.common.jgui.other.GuiContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 
 
 /**
@@ -24,19 +27,42 @@ public class QrGuiPages {
     private int frameHeight = 900;
     private final String CREATE_QR_PAGE_TITLE = "生成二维码";
     private final String SCAN_QR_PAGE_TITLE = "扫描二维码";
-
+    private static volatile QrGuiPages instance = null;
+    private static JFrame mainWindow;
+    private static GuiContext guiContext;
 
     /* ---------------------------------------- methods ---------------------------------------- */
+    private QrGuiPages() {
+        mainWindow = Frame.init(FRAME_TITLE, frameWidth, frameHeight);
+        guiContext = new GuiContext();
+    }
+
+    public static QrGuiPages getInstance() {
+        if (instance == null) {
+            synchronized (QrGuiPages.class) {
+                if (instance == null) {
+                    instance = new QrGuiPages();
+                }
+            }
+        }
+
+        return instance;
+    }
+
+    public JFrame getMainWindow() {
+        return mainWindow;
+    }
 
     /**
      *
      */
-    public void qrGuiMainPage(){
-        JFrame mainWindow = Frame.init(FRAME_TITLE, frameWidth, frameHeight);
+    public void qrGuiMainPage() {
         JTabbedPane tabbedPane = new JTabbedPane();
 
         CreateQrPage createQrPage = new CreateQrPage();
+        createQrPage.setJFrame(mainWindow);
         ScanQrPage scanQrPage = new ScanQrPage();
+        scanQrPage.setJFrame(mainWindow);
 
         tabbedPane.add(CREATE_QR_PAGE_TITLE, createQrPage.createQrPagePanel());
         tabbedPane.add(SCAN_QR_PAGE_TITLE, scanQrPage.scanQrPagePanel());
@@ -45,19 +71,38 @@ public class QrGuiPages {
             @Override
             public void stateChanged(ChangeEvent e) {
                 int selectTabelIndex = tabbedPane.getSelectedIndex();
-                LOGGER.debug("[qrGuiMainPage] 当前选中的选项卡：{}", selectTabelIndex);
+                LOGGER.debug("[stateChanged] 当前选中的选项卡：{}", selectTabelIndex);
                 tabbedPane.setSelectedIndex(selectTabelIndex);
                 Frame.refresh(mainWindow, tabbedPane);
             }
         });
         tabbedPane.setSelectedIndex(0);
+        guiContext.saveLocale("tabIndex", tabbedPane.getSelectedIndex());
+        guiContext.saveLocale("tabPanel", tabbedPane.getSelectedComponent());
+
+        mainWindow.addWindowFocusListener(new WindowFocusListener() {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                tabbedPane.setSelectedIndex((Integer) guiContext.getElement("tabIndex"));
+                tabbedPane.setSelectedComponent((JPanel) guiContext.getElement("tabPanel"));
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+                LOGGER.debug("[windowLostFocus] 当前选中的选项卡：index={}, element={}", tabbedPane.getSelectedIndex(), tabbedPane.getSelectedComponent());
+                System.out.println(tabbedPane.getSelectedComponent());
+                guiContext.saveLocale("tabIndex", tabbedPane.getSelectedIndex());
+                guiContext.saveLocale("tabPanel", tabbedPane.getSelectedComponent());
+            }
+        });
+
         mainWindow.setLocationRelativeTo(null);
         Frame.refresh(mainWindow, tabbedPane);
     }
 
 
     public static void main(String[] args) {
-        QrGuiPages qrGuiPages = new QrGuiPages();
+        QrGuiPages qrGuiPages = QrGuiPages.getInstance();
         qrGuiPages.qrGuiMainPage();
     }
 }

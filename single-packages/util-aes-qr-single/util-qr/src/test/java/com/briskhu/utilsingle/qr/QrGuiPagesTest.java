@@ -539,8 +539,7 @@ public class QrGuiPagesTest {
     }
 
     public static void main(String[] args) {
-        QrGuiPages qrGuiPages = new QrGuiPages();
-
+        QrGuiPagesTest qrGuiPages = new QrGuiPagesTest();
     }
 
 

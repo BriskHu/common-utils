@@ -169,6 +169,7 @@ public class CreateQrPage {
 //        GuiDebugTools.printBorder(Color.GREEN, row1Panel, row2Panel, row3Panel, row4Panel, row5Panel);
         LOGGER.debug("[scanQrPagePanel] resultPanel: w = {}, h = {}", resultPanel.getWidth(), resultPanel.getHeight());
         Panel.add(resultPanel, row1Panel, row2Panel, row3Panel, row4Panel, row5Panel);
+        panel = resultPanel;
 
         return resultPanel;
     }
@@ -271,10 +272,10 @@ public class CreateQrPage {
         dirChooser.setApproveButtonText("确定");
         int result = dirChooser.showOpenDialog(dirChooser);
         if (result == JFileChooser.APPROVE_OPTION) {
-            this.directory = dirChooser.getSelectedFile().getAbsolutePath();
+            directory = dirChooser.getSelectedFile().getAbsolutePath();
             LOGGER.info("选择的二维码图片保存路径为：{}", directory);
         } else {
-            this.directory = DEFAULT_PATH;
+            directory = DEFAULT_PATH;
         }
 
         if (choosedDirLabel == null) {
@@ -291,6 +292,7 @@ public class CreateQrPage {
             choosedDirLabel.setText(directory);
             row2Panel.validate();
         }
+        LOGGER.error("[initFileChooser] jFrame= {}", jFrame);
 
         Frame.refresh(jFrame, panel);
     }
@@ -299,10 +301,10 @@ public class CreateQrPage {
         if (checkParams()) {
             QrCodeUtil.encode(text, resultFile);
             row4Panel = (JPanel) panel.getComponent(3);
-            for (int i = 0; i < panel.getComponents().length; i++) {
-//                LOGGER.debug("[doCreateQrBtn] panel components: ", panel.getComponent(i).toString());
-                System.out.println(panel.getComponent(i));
-            }
+//            for (int i = 0; i < panel.getComponents().length; i++) {
+////                LOGGER.debug("[doCreateQrBtn] panel components: ", panel.getComponent(i).toString());
+//                System.out.println(panel.getComponent(i));
+//            }
 
             row4Panel.remove(0);
             imageLabel = null;
@@ -331,6 +333,10 @@ public class CreateQrPage {
         outputLabel.validate();
 
         return true;
+    }
+
+    public void setJFrame(JFrame frame) {
+        jFrame = frame;
     }
 
 

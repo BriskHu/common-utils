@@ -5,6 +5,8 @@ import com.briskhu.common.jgui.operation.Frame;
 import com.briskhu.common.jgui.operation.Label;
 import com.briskhu.common.jgui.operation.Panel;
 import com.briskhu.common.jgui.operation.TextArea;
+import com.briskhu.common.jgui.other.FileTypeUtils;
+import com.google.zxing.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +50,10 @@ public class ScanQrPage {
     private JButton chooseFileBtn = null;
     private JFileChooser fileChooser = null;
     private final String CHOOSE_FILE_HINT = "请选择二维码图片";
-    private final String NOT_FILE= "选择的不是一个有效的文件";
-    private final String NO_FILE= "没有选择二维码图片文件";
+    private final String NOT_FILE = "选择的不是一个有效的文件";
+    private final String NOT_IMAGE = "选择的不是一个有效的jpg/png文件";
+    private final String NO_FILE = "没有选择图片文件";
+    private final String NO_QR_IMAGE = "选择的不是一个有效的二维码图片文件";
     private int fileChooserWidth = 500;
     private int fileChooserHeight = 350;
     private JButton scanQrBtn = null;
@@ -77,6 +81,7 @@ public class ScanQrPage {
 
 
     /* ---------------------------------------- methods ---------------------------------------- */
+
     /**
      * 基于Box布局的页面
      */
@@ -92,6 +97,7 @@ public class ScanQrPage {
 
     /**
      * 生成二维码页面的面板
+     *
      * @return
      */
     public JPanel scanQrPagePanel() {
@@ -120,12 +126,13 @@ public class ScanQrPage {
 //        GuiDebugTools.printBorder(Color.GREEN, rowPanels);
         LOGGER.debug("[scanQrPagePanel] resultPanel: w = {}, h = {}", resultPanel.getWidth(), resultPanel.getHeight());
         Panel.add(resultPanel, rowPanels);
+        panel = resultPanel;
 
         return resultPanel;
     }
 
 
-    private JPanel createRow1Panel(String panelName)  {
+    private JPanel createRow1Panel(String panelName) {
         chooseFileBtn = Button.init("chooseFileBtn", CHOOSE_FILE_HINT, 20, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -147,6 +154,7 @@ public class ScanQrPage {
             }
         });
         scanQrBtn.setPreferredSize(new Dimension(100, 40));
+        scanQrBtn.setEnabled(false);
 
         Box box = Box.createHorizontalBox();
         box.add(chooseFileBtn);
@@ -213,49 +221,83 @@ public class ScanQrPage {
         int result = fileChooser.showOpenDialog(fileChooser);
         if (result == JFileChooser.APPROVE_OPTION) {
             this.choosedFile = fileChooser.getSelectedFile();
-            if ( !choosedFile.exists() || !choosedFile.isFile())
-            {
+            if (!choosedFile.exists() || !choosedFile.isFile()) {
                 LOGGER.error("[initFileChooser] {}。", NOT_FILE);
-                JOptionPane.showMessageDialog(jFrame, NOT_FILE, CHOOSE_FILE_HINT, JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(panel, NOT_FILE, CHOOSE_FILE_HINT, JOptionPane.ERROR_MESSAGE);
+//                JOptionPane.showMessageDialog(null, NOT_FILE, CHOOSE_FILE_HINT, JOptionPane.ERROR_MESSAGE);
+                row3Panel.validate();
             }
-            this.choosedFile = choosedFile.getAbsoluteFile();
-            this.filename = choosedFile.getAbsolutePath();
-            LOGGER.info("[initFileChooser] 选择的二维码图片为：choosedFile = {}, filename = {}, choosedFile.getName() = {}", choosedFile, filename, choosedFile.getName());
+            String fileType = FileTypeUtils.getFileType(choosedFile);
+            LOGGER.debug("[initFileChooser] fileType = {}", fileType);
 
-            row3Panel.remove(0);
-            imageLabel = null;
-            imageLabel = Label.initImageLabel("imageLabel", imgWidth, imgHeight, filename);
-            row3Panel.add(imageLabel, BorderLayout.CENTER);
-            row3Panel.validate();
-            Panel.reloadChildren(panel, rowPanels);
+            if (fileType == null || (!fileType.equals("jpg") && !fileType.equals("png"))) {
+                LOGGER.error("[initFileChooser] {}。", NOT_IMAGE);
+                JOptionPane.showMessageDialog(panel, NOT_IMAGE, CHOOSE_FILE_HINT, JOptionPane.ERROR_MESSAGE);
+                scanQrBtn.setEnabled(false);
+                refreshImgLabel(null);
+            } else {
+                scanQrBtn.setEnabled(true);
+                this.choosedFile = choosedFile.getAbsoluteFile();
+                this.filename = choosedFile.getAbsolutePath();
+                LOGGER.info("[initFileChooser] 选择的二维码图片为：choosedFile = {}, filename = {}, choosedFile.getName() = {}", choosedFile, filename, choosedFile.getName());
+
+                refreshImgLabel(filename);
+            }
         } else {
             this.choosedFile = null;
             this.filename = null;
-            LOGGER.error("[initFileChooser] {}。", NO_FILE);
-            JOptionPane.showMessageDialog(jFrame, NO_FILE, CHOOSE_FILE_HINT, JOptionPane.INFORMATION_MESSAGE);
+            LOGGER.error("[initFileChooser] jFrame= {}, msg = {}。", jFrame, NO_FILE);
+            JOptionPane.showMessageDialog(panel, NO_FILE, CHOOSE_FILE_HINT, JOptionPane.INFORMATION_MESSAGE);
+            row3Panel.validate();
         }
 
         filenameLabel.setText(filename);
         row1Panel.validate();
-        Frame.refresh(jFrame, panel);
+    }
+
+    /**
+     * 刷新图片标签
+     * @param filename
+     */
+    private void refreshImgLabel(String filename){
+        row3Panel.remove(0);
+        imageLabel = null;
+        imageLabel = Label.initImageLabel("imageLabel", imgWidth, imgHeight, filename);
+        row3Panel.add(imageLabel, BorderLayout.CENTER);
+        row3Panel.validate();
+        Panel.reloadChildren(panel, rowPanels);
     }
 
     private void doScanQrBtn() throws Exception {
         if (checkParams()) {
-            qrDecryptedText = QrCodeUtil.decode(choosedFile);
-            qrDecryptedTextArea.setText(qrDecryptedText);
-            row4Panel.validate();
+            try{
+                qrDecryptedText = QrCodeUtil.decode(choosedFile);
+                if (qrDecryptedText == null){
+                    JOptionPane.showMessageDialog(panel, NO_QR_IMAGE, CHOOSE_FILE_HINT, JOptionPane.INFORMATION_MESSAGE);
+                }else {
+                    qrDecryptedTextArea.setText(qrDecryptedText);
+                    row4Panel.validate();
+                }
+            }catch (NotFoundException nfe){
+                LOGGER.error("[doScanQrBtn] {}", NO_QR_IMAGE);
+                JOptionPane.showMessageDialog(panel, NO_QR_IMAGE, CHOOSE_FILE_HINT, JOptionPane.INFORMATION_MESSAGE);
+            }
         }
     }
 
     private boolean checkParams() {
         if (this.filename == null || filename.equals("")) {
-            LOGGER.error("[initFileChooser] {}。", NO_FILE);
-            JOptionPane.showMessageDialog(jFrame, NO_FILE, CHOOSE_FILE_HINT, JOptionPane.INFORMATION_MESSAGE);
+            LOGGER.error("[initFileChooser] jFrame= {}, msg = {}。", jFrame, NO_FILE);
+            JOptionPane.showMessageDialog(panel, NO_FILE, CHOOSE_FILE_HINT, JOptionPane.INFORMATION_MESSAGE);
+            row3Panel.validate();
             return false;
         }
 
         return true;
+    }
+
+    public void setJFrame(JFrame frame) {
+        jFrame = frame;
     }
 
 
@@ -264,7 +306,6 @@ public class ScanQrPage {
 
         scanQrPage.scanQrPageByBox();
     }
-
 
 
 }
