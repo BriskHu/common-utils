@@ -212,6 +212,10 @@ public class ScanQrPage {
     }
 
     private void initFileChooser(JFileChooser fileChooser, int fontSize) {
+        this.qrDecryptedText = null;
+        this.choosedFile = null;
+        this.filename = null;
+
         fileChooser.setFont(new Font(null, Font.PLAIN, fontSize));
         fileChooser.setPreferredSize(new Dimension(fileChooserWidth, fileChooserHeight));
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -244,13 +248,12 @@ public class ScanQrPage {
                 refreshImgLabel(filename);
             }
         } else {
-            this.choosedFile = null;
-            this.filename = null;
             LOGGER.error("[initFileChooser] jFrame= {}, msg = {}。", jFrame, NO_FILE);
             JOptionPane.showMessageDialog(panel, NO_FILE, CHOOSE_FILE_HINT, JOptionPane.INFORMATION_MESSAGE);
             row3Panel.validate();
         }
 
+        qrDecryptedTextArea.setText(qrDecryptedText);
         filenameLabel.setText(filename);
         row1Panel.validate();
     }
