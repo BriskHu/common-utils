@@ -52,7 +52,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.briskhu.utilsingle.qr.QrGuiPages</mainClass>
+                            <mainClass>com.briskhu.utilsingle.qr.QrGuiMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

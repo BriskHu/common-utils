@@ -18,8 +18,8 @@ import java.awt.event.WindowFocusListener;
  * @author Brisk Hu
  * created on 2019-10-30
  **/
-public class QrGuiPages {
-    private static final Logger LOGGER = LoggerFactory.getLogger(QrGuiPages.class);
+public class QrGuiMain {
+    private static final Logger LOGGER = LoggerFactory.getLogger(QrGuiMain.class);
 
     /* ---------------------------------------- fileds ---------------------------------------- */
     private final String FRAME_TITLE = "二维码生成和扫描工具";
@@ -27,21 +27,21 @@ public class QrGuiPages {
     private int frameHeight = 900;
     private final String CREATE_QR_PAGE_TITLE = "生成二维码";
     private final String SCAN_QR_PAGE_TITLE = "扫描二维码";
-    private static volatile QrGuiPages instance = null;
+    private static volatile QrGuiMain instance = null;
     private static JFrame mainWindow;
     private static GuiContext guiContext;
 
     /* ---------------------------------------- methods ---------------------------------------- */
-    private QrGuiPages() {
+    private QrGuiMain() {
         mainWindow = Frame.init(FRAME_TITLE, frameWidth, frameHeight);
         guiContext = new GuiContext();
     }
 
-    public static QrGuiPages getInstance() {
+    public static QrGuiMain getInstance() {
         if (instance == null) {
-            synchronized (QrGuiPages.class) {
+            synchronized (QrGuiMain.class) {
                 if (instance == null) {
-                    instance = new QrGuiPages();
+                    instance = new QrGuiMain();
                 }
             }
         }
@@ -102,8 +102,8 @@ public class QrGuiPages {
 
 
     public static void main(String[] args) {
-        QrGuiPages qrGuiPages = QrGuiPages.getInstance();
-        qrGuiPages.qrGuiMainPage();
+        QrGuiMain qrGuiMain = QrGuiMain.getInstance();
+        qrGuiMain.qrGuiMainPage();
     }
 }
 
