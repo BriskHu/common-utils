@@ -42,7 +42,7 @@ public class AesEncryptPage {
     private int frameWidth = 800;
     private int frameHeight = 800;
     private JPanel panel = null;
-    private int textBarWidth = 780;
+    private int textBarWidth = 800;
     private int textBarHeight = 50;
     private int elementGap = 10;
     private int panelGap = 10;
@@ -73,7 +73,7 @@ public class AesEncryptPage {
     private JPanel row3Panel = null;
     private JTextArea originArea = null;
     private String originText = null;
-    private int originAreaWidth = 610;
+    private int originAreaWidth = 625;
     private int originAreaHeight = 280;
     private String INPUT_ORIGIN_HINT = "请输入待加密内容";
     private String NO_ORIGIN = "待加密内容为空";
@@ -98,7 +98,7 @@ public class AesEncryptPage {
 
     private JPanel row6Panel = null;
     private JTextArea encryptArea = null;
-    private int encryptAreaWidth = 610;
+    private int encryptAreaWidth = 625;
     private int encryptAreaHeight = 280;
     private String encryptResult = null;
 
@@ -160,7 +160,7 @@ public class AesEncryptPage {
         aesMode = aesModes[0];
 
         offsetLabel = Label.init(OFFSET_HINT, FSIZE_NORMAL);
-        offsetField = TextField.init("originText", 20, FSIZE_NORMAL, INPUT_OFFSET_HINT);
+        offsetField = TextField.init("originText", 21, FSIZE_NORMAL, INPUT_OFFSET_HINT);
 
         Box box = Box.createHorizontalBox();
         box.add(aesModeLabel);
@@ -224,7 +224,7 @@ public class AesEncryptPage {
         box.add(keyField);
         box.add(Box.createHorizontalStrut(elementGap));
         box.add(keyEncodingModeComb);
-        box.add(Box.createHorizontalStrut(elementGap * 4));
+        box.add(Box.createHorizontalStrut(elementGap * 5));
         box.add(encryptBtn);
 
         return Panel.initForBox(panelName, 180, 10, box);
@@ -300,15 +300,19 @@ public class AesEncryptPage {
             offsetField.validate();
             return false;
         }
+
+        byte[] keyBytes = null;
         if (keyEncodingMode.equals(KeyEncodingMode.BASE64.getEncodingName())){
-            byte[] keyBytes = Base64.decodeBase64(key);
-            if (!AesUtil.isKeySizeValid(keyBytes.length)){
-                LOGGER.error("[checkParams] The length of key is illegal.");
-                JOptionPane.showMessageDialog(panel, ILLEGAL_KEY_LENGTH, AesGuiMain.AES_EN_PAGE_TITLE, JOptionPane.ERROR_MESSAGE);
-                keyField.setText(INPUT_KEY_HINT);
-                keyField.validate();
-                return false;
-            }
+             keyBytes = Base64.decodeBase64(key);
+        }else{
+            keyBytes = key.getBytes();
+        }
+        if (!AesUtil.isKeySizeValid(keyBytes.length)){
+            LOGGER.error("[checkParams] The length of key is illegal.");
+            JOptionPane.showMessageDialog(panel, ILLEGAL_KEY_LENGTH, AesGuiMain.AES_EN_PAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+            keyField.setText(INPUT_KEY_HINT);
+            keyField.validate();
+            return false;
         }
 
         result = true;
