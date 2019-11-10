@@ -42,7 +42,7 @@ public class AesEncryptPage {
     private int frameWidth = 800;
     private int frameHeight = 800;
     private JPanel panel = null;
-    private int textBarWidth = 800;
+    private int textBarWidth = 750;
     private int textBarHeight = 50;
     private int elementGap = 10;
     private int panelGap = 10;
@@ -121,7 +121,7 @@ public class AesEncryptPage {
         row6Panel = createRow6Panel("row6Panel");
         rowPanels = new JPanel[]{row1Panel, row2Panel, row3Panel, row4Panel, row5Panel, row6Panel};
 
-        LOGGER.debug("[createAesEncryptPagePanel] resultPanel: (x,y)=({},{})", panel.getX(), panel.getY());
+        LOGGER.debug("[createAesEncryptPagePanel] panel: (x,y)=({},{})", panel.getX(), panel.getY());
         row1Panel.setLocation(panel.getX() + panelGap, panel.getY() + panelGap);
         row1Panel.setSize(textBarWidth, textBarHeight);
 
@@ -139,7 +139,7 @@ public class AesEncryptPage {
         row6Panel.setSize(encryptAreaWidth, encryptAreaHeight);
 
         GuiDebugTools.printBorderByToggle(Color.GREEN, rowPanels);
-        LOGGER.debug("[scanQrPagePanel] panel: w = {}, h = {}", panel.getWidth(), panel.getHeight());
+        LOGGER.debug("[createAesEncryptPagePanel] panel: w = {}, h = {}", panel.getWidth(), panel.getHeight());
         Panel.add(panel, rowPanels);
 
         return panel;
@@ -252,12 +252,16 @@ public class AesEncryptPage {
     }
 
     public void doEncryptBtn() {
+        encryptResult = null;
+        encryptArea.setText("null");
+        encryptArea.validate();
+
         if (checkParams()) {
             if (aesMode.equals(AesModeEnum.ALL_DEFAULT.getModeName())) {
                 try {
-                    if (keyEncodingMode.equals(KeyEncodingMode.PLATIN.getEncodingName())){
+                    if (keyEncodingMode.equals(KeyEncodingMode.PLATIN.getEncodingName())) {
                         encryptResult = new String(Base64.encodeBase64(AESCoder.encrypt(originText.getBytes(), key.getBytes())));
-                    }else {
+                    } else {
                         encryptResult = new String(Base64.encodeBase64(AESCoder.encrypt(originText, key)));
                     }
                 } catch (Exception e) {
@@ -267,6 +271,8 @@ public class AesEncryptPage {
                 AESUtilP7.setOffset(offset);
                 encryptResult = AESUtilP7.encrypt(originText, key);
             }
+            LOGGER.info("[doEncryptBtn] encryptResult = {}", encryptResult);
+
             encryptArea.setText(encryptResult);
             encryptArea.validate();
         }
@@ -277,7 +283,7 @@ public class AesEncryptPage {
         originText = originArea.getText();
         key = keyField.getText();
         offset = offsetField.getText();
-        LOGGER.debug("[checkParams] originText = {}, key = {}, offset = {}, keyEncodingMode= {}", originText, key, offset, keyEncodingMode);
+        LOGGER.debug("[checkParams] originText = {}, key = {}, offset = {}, keyEncodingMode = {}", originText, key, offset, keyEncodingMode);
 
         if (originText.equals("")) {
             LOGGER.error("[checkParams] originText or key is null");
@@ -293,21 +299,21 @@ public class AesEncryptPage {
             keyField.validate();
             return false;
         }
-        if (offset.equals("")){
-            LOGGER.error("[checkParams] offset is null");
-            JOptionPane.showMessageDialog(panel, NO_OFFSET, AesGuiMain.AES_EN_PAGE_TITLE, JOptionPane.ERROR_MESSAGE);
-            offsetField.setText(INPUT_OFFSET_HINT);
-            offsetField.validate();
-            return false;
-        }
+//        if (offset.equals("")) {
+//            LOGGER.error("[checkParams] offset is null");
+//            JOptionPane.showMessageDialog(panel, NO_OFFSET, AesGuiMain.AES_EN_PAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+//            offsetField.setText(INPUT_OFFSET_HINT);
+//            offsetField.validate();
+//            return false;
+//        }
 
         byte[] keyBytes = null;
-        if (keyEncodingMode.equals(KeyEncodingMode.BASE64.getEncodingName())){
-             keyBytes = Base64.decodeBase64(key);
-        }else{
+        if (keyEncodingMode.equals(KeyEncodingMode.BASE64.getEncodingName())) {
+            keyBytes = Base64.decodeBase64(key);
+        } else {
             keyBytes = key.getBytes();
         }
-        if (!AesUtil.isKeySizeValid(keyBytes.length)){
+        if (!AesUtil.isKeySizeValid(keyBytes.length)) {
             LOGGER.error("[checkParams] The length of key is illegal.");
             JOptionPane.showMessageDialog(panel, ILLEGAL_KEY_LENGTH, AesGuiMain.AES_EN_PAGE_TITLE, JOptionPane.ERROR_MESSAGE);
             keyField.setText(INPUT_KEY_HINT);

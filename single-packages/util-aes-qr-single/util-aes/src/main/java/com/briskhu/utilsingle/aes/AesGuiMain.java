@@ -2,6 +2,7 @@ package com.briskhu.utilsingle.aes;
 
 import com.briskhu.common.jgui.operation.Frame;
 import com.briskhu.common.jgui.other.GuiContext;
+import com.briskhu.utilsingle.aes.uipage.AesDecryptPage;
 import com.briskhu.utilsingle.aes.uipage.AesEncryptPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +56,11 @@ public class AesGuiMain {
         JTabbedPane tabbedPane = new JTabbedPane();
         AesEncryptPage aesEncryptPage = new AesEncryptPage();
         aesEncryptPage.setJFrame(mainWindow);
+        AesDecryptPage aesDecryptPage = new AesDecryptPage();
+        aesDecryptPage.createAesDecryptPagePanel();
 
         tabbedPane.add(AES_EN_PAGE_TITLE, aesEncryptPage.createAesEncryptPagePanel());
+        tabbedPane.add(AES_DE_PAGE_TITLE, aesDecryptPage.createAesDecryptPagePanel());
 
         tabbedPane.addChangeListener(new ChangeListener() {
             @Override

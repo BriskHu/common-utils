@@ -47,8 +47,10 @@ public class TextArea {
         return textArea;
     }
 
-    public static void init(JTextArea textAreaStr, int fontSize) {
-        textAreaStr.setFont(new Font(null, Font.PLAIN, fontSize));
+    public static void init(JTextArea textArea, int fontSize) {
+        textArea.setFont(new Font(null, Font.PLAIN, fontSize));
+        textArea.setLineWrap(true);         //激活自动换行功能
+        textArea.setWrapStyleWord(true);     // 激活断行不断字功能
     }
 
 }
