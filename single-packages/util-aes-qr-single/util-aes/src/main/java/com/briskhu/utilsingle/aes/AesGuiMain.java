@@ -57,7 +57,7 @@ public class AesGuiMain {
         AesEncryptPage aesEncryptPage = new AesEncryptPage();
         aesEncryptPage.setJFrame(mainWindow);
         AesDecryptPage aesDecryptPage = new AesDecryptPage();
-        aesDecryptPage.createAesDecryptPagePanel();
+        aesDecryptPage.setJFrame(mainWindow);
 
         tabbedPane.add(AES_EN_PAGE_TITLE, aesEncryptPage.createAesEncryptPagePanel());
         tabbedPane.add(AES_DE_PAGE_TITLE, aesDecryptPage.createAesDecryptPagePanel());

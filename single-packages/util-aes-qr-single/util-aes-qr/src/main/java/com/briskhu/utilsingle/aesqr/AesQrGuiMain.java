@@ -1,5 +1,12 @@
 package com.briskhu.utilsingle.aesqr;
 
+import com.briskhu.common.jgui.operation.Frame;
+import com.briskhu.common.jgui.other.GuiContext;
+import com.briskhu.common.jgui.other.GuiDebugTools;
+import com.briskhu.utilsingle.aes.uipage.AesDecryptPage;
+import com.briskhu.utilsingle.aes.uipage.AesEncryptPage;
+import com.briskhu.utilsingle.qr.CreateQrPage;
+import com.briskhu.utilsingle.qr.ScanQrPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,51 +25,79 @@ public class AesQrGuiMain {
     private static final Logger LOGGER = LoggerFactory.getLogger(AesQrGuiMain.class);
 
     /* ---------------------------------------- fileds ---------------------------------------- */
-    private static final String DEFAULT_PATH = "C:\\Users\\Administrator\\Desktop";
+    private final String FRAME_TITLE = "Aes加密并生成二维码工具";
+    private int frameWidth = 800;
+    private int frameHeight = 900;
+    public static final String AES_EN_PAGE_TITLE = "Aes加密";
+    public static final String AES_DE_PAGE_TITLE = "Aes解密";
+    private final String CREATE_QR_PAGE_TITLE = "生成二维码";
+    private final String SCAN_QR_PAGE_TITLE = "扫描二维码";
 
+    private static volatile AesQrGuiMain instance = null;
+    private static JFrame mainWindow;
+    private static GuiContext guiContext;
+
+
+    private AesQrGuiMain() {
+        mainWindow = Frame.init(FRAME_TITLE, frameWidth, frameHeight);
+        guiContext = new GuiContext();
+    }
+
+    public static AesQrGuiMain getInstance() {
+        if (instance == null) {
+            synchronized (AesQrGuiMain.class) {
+                if (instance == null) {
+                    instance = new AesQrGuiMain();
+                }
+            }
+        }
+
+        return instance;
+    }
+
+    public JFrame getMainWindow() {
+        return mainWindow;
+    }
 
     /* ---------------------------------------- methods ---------------------------------------- */
-    public static void main(String[] args) {
-        JFrame jFrame = new JFrame("Aes加密并生成二维码工具");
-        jFrame.setSize(800, 800);
-        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        jFrame.setLocationRelativeTo(null);
+    public void aesQrGuiMainPage() {
+//        GuiDebugTools.setPrintBorderToggle(true);      //允许打印面板的边框
 
-        final JTabbedPane tabbedPane = new JTabbedPane();
+        JTabbedPane tabbedPane = new JTabbedPane();
 
+        AesEncryptPage aesEncryptPage = new AesEncryptPage();
+        aesEncryptPage.setJFrame(mainWindow);
+        AesDecryptPage aesDecryptPage = new AesDecryptPage();
+        aesDecryptPage.setJFrame(mainWindow);
 
-        tabbedPane.add("Aes 加密", createTabPanel("aesEncrypt"));
-        tabbedPane.add("Aes 解密", createTabPanel("aesDecrypt"));
-        tabbedPane.add("生成二维码", createTabPanel("createQr"));
-        tabbedPane.add("扫描二维码", createTabPanel("scanQr"));
+        CreateQrPage createQrPage = new CreateQrPage();
+        createQrPage.setJFrame(mainWindow);
+        ScanQrPage scanQrPage = new ScanQrPage();
+        scanQrPage.setJFrame(mainWindow);
+
+        tabbedPane.add(AES_EN_PAGE_TITLE, aesEncryptPage.createAesEncryptPagePanel());
+        tabbedPane.add(AES_DE_PAGE_TITLE, aesDecryptPage.createAesDecryptPagePanel());
+        tabbedPane.add(CREATE_QR_PAGE_TITLE, createQrPage.createQrPagePanel());
+        tabbedPane.add(SCAN_QR_PAGE_TITLE, scanQrPage.scanQrPagePanel());
 
         tabbedPane.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                LOGGER.debug("当前选中的选项卡：" + tabbedPane.getSelectedIndex());
+                int selectTabelIndex = tabbedPane.getSelectedIndex();
+                LOGGER.debug("[stateChanged] 当前选中的选项卡：{}", selectTabelIndex);
+                tabbedPane.setSelectedIndex(selectTabelIndex);
+                Frame.refresh(mainWindow, tabbedPane);
             }
         });
-
         tabbedPane.setSelectedIndex(0);
 
-        jFrame.setContentPane(tabbedPane);
-        jFrame.setVisible(true);
+        mainWindow.setLocationRelativeTo(null);
+        Frame.refresh(mainWindow, tabbedPane);
     }
 
-    /**
-     * 创建选项卡
-     *
-     * @param tabName
-     * @return
-     */
-    public static JComponent createTabPanel(String tabName) {
-        JPanel panel = new JPanel(new GridLayout(1, 1));
-        JLabel label = new JLabel(tabName);
-        label.setFont(new Font(null, Font.PLAIN, 20));
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-
-        panel.add(label);
-        return panel;
+    public static void main(String[] args) {
+        AesQrGuiMain aesGuiMain = AesQrGuiMain.getInstance();
+        aesGuiMain.aesQrGuiMainPage();
     }
 
 }

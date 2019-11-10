@@ -16,7 +16,7 @@ public class GuiDebugTools {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuiDebugTools.class);
 
     /* ---------------------------------------- fileds ---------------------------------------- */
-    private static boolean printBorderToggle = true;
+    private static boolean printBorderToggle = false;
 
 
     /* ---------------------------------------- methods ---------------------------------------- */

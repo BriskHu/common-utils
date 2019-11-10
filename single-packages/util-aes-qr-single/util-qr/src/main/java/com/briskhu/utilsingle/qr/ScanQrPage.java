@@ -6,6 +6,7 @@ import com.briskhu.common.jgui.operation.Label;
 import com.briskhu.common.jgui.operation.Panel;
 import com.briskhu.common.jgui.operation.TextArea;
 import com.briskhu.common.jgui.other.FileTypeUtils;
+import com.briskhu.common.jgui.other.GuiDebugTools;
 import com.google.zxing.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,7 @@ public class ScanQrPage {
     private int frameWidth = 800;
     private int frameHeight = 800;
     private JPanel panel = null;
-    private int textBarWidth = 700;
+    private int textBarWidth = 750;
     private int textBarHeight = 50;
     private int elementGap = 10;
     private int panelGap = 10;
@@ -76,7 +77,7 @@ public class ScanQrPage {
 
     private JPanel row5Panel = null;
     private JTextArea qrDecryptedTextArea = null;
-    private int qrDecryptedTextAreaWidth = 600;
+    private int qrDecryptedTextAreaWidth = 640;
     private int qrDecryptedTextAreaHeight = 180;
 
 
@@ -123,7 +124,7 @@ public class ScanQrPage {
         row5Panel.setLocation(110, (textBarHeight + panelGap) * 2 + imgHeight + panelGap);
         row5Panel.setSize(qrDecryptedTextAreaWidth, qrDecryptedTextAreaHeight);
 
-//        GuiDebugTools.printBorder(Color.GREEN, rowPanels);
+        GuiDebugTools.printBorderByToggle(Color.GREEN, rowPanels);
         LOGGER.debug("[scanQrPagePanel] resultPanel: w = {}, h = {}", resultPanel.getWidth(), resultPanel.getHeight());
         Panel.add(resultPanel, rowPanels);
         panel = resultPanel;
@@ -158,7 +159,7 @@ public class ScanQrPage {
 
         Box box = Box.createHorizontalBox();
         box.add(chooseFileBtn);
-        box.add(Box.createHorizontalStrut(360));
+        box.add(Box.createHorizontalStrut(410));
         box.add(scanQrBtn);
 
         return Panel.initForBox(panelName, 200, 10, box);
