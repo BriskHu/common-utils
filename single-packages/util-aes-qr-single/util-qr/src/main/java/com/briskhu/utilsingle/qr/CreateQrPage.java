@@ -6,6 +6,7 @@ import com.briskhu.common.jgui.operation.Frame;
 import com.briskhu.common.jgui.operation.Label;
 import com.briskhu.common.jgui.operation.Panel;
 import com.briskhu.common.jgui.operation.TextField;
+import com.briskhu.common.jgui.other.GuiDebugTools;
 import com.briskhu.common.jgui.other.OsTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,7 @@ public class CreateQrPage {
     private int frameWidth = 800;
     private int frameHeight = 800;
     private JPanel panel = null;
-    private int textBarWidth = 700;
+    private int textBarWidth = 750;
     private int textBarHeight = 50;
     private int elementGap = 10;
     private int panelGap = 10;
@@ -153,7 +154,7 @@ public class CreateQrPage {
         row4Panel = createRow4Panel("row4Panel");
         row5Panel = createRow5Panel("row5Panel");
 
-        LOGGER.debug("[scanQrPagePanel] resultPanel: (x,y)=({},{})", resultPanel.getX(), resultPanel.getY());
+        LOGGER.debug("[createQrPagePanel] resultPanel: (x,y)=({},{})", resultPanel.getX(), resultPanel.getY());
         row1Panel.setLocation(resultPanel.getX() + panelGap, resultPanel.getY() + panelGap);
         row1Panel.setSize(textBarWidth, textBarHeight);
         row2Panel.setLocation(10, textBarHeight + panelGap * 2);
@@ -167,7 +168,7 @@ public class CreateQrPage {
         row5Panel.setSize(textBarWidth, textBarHeight);
 
 //        GuiDebugTools.printBorder(Color.GREEN, row1Panel, row2Panel, row3Panel, row4Panel, row5Panel);
-        LOGGER.debug("[scanQrPagePanel] resultPanel: w = {}, h = {}", resultPanel.getWidth(), resultPanel.getHeight());
+        LOGGER.debug("[createQrPagePanel] resultPanel: w = {}, h = {}", resultPanel.getWidth(), resultPanel.getHeight());
         Panel.add(resultPanel, row1Panel, row2Panel, row3Panel, row4Panel, row5Panel);
         panel = resultPanel;
 
@@ -177,7 +178,7 @@ public class CreateQrPage {
 
     private JPanel createRow1Panel(String panelName) {
         textLabel = Label.init("原始文本", 20);
-        textField = TextField.init("originText", 36, 20, TEXT_HINT);
+        textField = TextField.init("originText", 40, 20, TEXT_HINT);
 
         Box box = Box.createHorizontalBox();
         box.add(textLabel);
@@ -196,7 +197,7 @@ public class CreateQrPage {
                 doDirChoose();
             }
         });
-        dirBtn.setPreferredSize(new Dimension(380, 40));
+        dirBtn.setPreferredSize(new Dimension(280, 40));
         Box box = Box.createHorizontalBox();
         box.add(dirLabel);
         box.add(Box.createHorizontalStrut(10));
@@ -207,7 +208,7 @@ public class CreateQrPage {
 
     private JPanel createRow3Panel(String panelName) {
         fileLabel = Label.init(fileLabelStr, 20);
-        fileField = TextField.init("fileField", 15, 20, FILE_HINT);
+        fileField = TextField.init("fileField", 20, 20, FILE_HINT);
         createQrBtn = Button.init("createQrBtn", CREATE_QR_HINT, 20, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -233,7 +234,7 @@ public class CreateQrPage {
         box.add(fileField);
         box.add(Box.createHorizontalStrut(10));
         box.add(imgFormat);
-        box.add(Box.createHorizontalStrut(108));
+        box.add(Box.createHorizontalStrut(95));
         box.add(createQrBtn);
 
         return Panel.initForBox(panelName, 200, 10, box);
@@ -280,7 +281,7 @@ public class CreateQrPage {
 
         if (choosedDirLabel == null) {
             choosedDirLabel = Label.init(directory, 20);
-            choosedDirLabel.setPreferredSize(new Dimension(850, 20));
+            choosedDirLabel.setPreferredSize(new Dimension(345, 20));
             row2Panel = (JPanel) panel.getComponent(1);
             Box box = ((Box) row2Panel.getComponent(0));
             box.add(choosedDirLabel, 2);
@@ -292,9 +293,7 @@ public class CreateQrPage {
             choosedDirLabel.setText(directory);
             row2Panel.validate();
         }
-        LOGGER.error("[initFileChooser] jFrame= {}", jFrame);
-
-        Frame.refresh(jFrame, panel);
+//        Frame.refresh(jFrame, panel);
     }
 
     private void doCreateQrBtn() throws Exception {
