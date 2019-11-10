@@ -185,12 +185,14 @@ public class AesEncryptPage {
 
     private JPanel createRow3Panel(String panelName) {
         originArea = TextArea.init(INPUT_ORIGIN_HINT, "originArea", FSIZE_NORMAL);
-        originArea.setPreferredSize(new Dimension(encryptAreaWidth, originAreaHeight));
+        originArea.setPreferredSize(new Dimension(originAreaWidth, originAreaHeight));
         originArea.enableInputMethods(true);
 
-        JPanel panel = Panel.init(panelName, encryptAreaWidth, encryptAreaHeight);
+        JPanel panel = Panel.init(panelName, originAreaWidth, originAreaHeight);
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panel.add(originArea);
+//        panel.add(originArea);
+        JScrollPane scrollPane = TextArea.putIntoScrollbar(originArea, new Dimension(originAreaWidth-5, originAreaHeight-5));
+        panel.add(scrollPane);
 
         return panel;
     }
@@ -246,7 +248,8 @@ public class AesEncryptPage {
 
         JPanel panel = Panel.init(panelName, encryptAreaWidth, encryptAreaHeight);
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panel.add(encryptArea);
+        JScrollPane scrollPane = TextArea.putIntoScrollbar(encryptArea, new Dimension(encryptAreaWidth-5, encryptAreaHeight-5));
+        panel.add(scrollPane);
 
         return panel;
     }

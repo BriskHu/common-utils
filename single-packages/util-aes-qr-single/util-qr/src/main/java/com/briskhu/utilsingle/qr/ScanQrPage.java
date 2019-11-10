@@ -77,7 +77,7 @@ public class ScanQrPage {
     private JPanel row5Panel = null;
     private JTextArea qrDecryptedTextArea = null;
     private int qrDecryptedTextAreaWidth = 600;
-    private int qrDecryptedTextAreaHeight = 100;
+    private int qrDecryptedTextAreaHeight = 180;
 
 
     /* ---------------------------------------- methods ---------------------------------------- */
@@ -200,7 +200,9 @@ public class ScanQrPage {
 
         JPanel panel = Panel.init(panelName, imgWidth, imgHeight);
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panel.add(qrDecryptedTextArea);
+//        panel.add(qrDecryptedTextArea);
+        JScrollPane scrollPane = TextArea.putIntoScrollbar(qrDecryptedTextArea, new Dimension(qrDecryptedTextAreaWidth-5, qrDecryptedTextAreaHeight-5));
+        panel.add(scrollPane);
 
         return panel;
     }

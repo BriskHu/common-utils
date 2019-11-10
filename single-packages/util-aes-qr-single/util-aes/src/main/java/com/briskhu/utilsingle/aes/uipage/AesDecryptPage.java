@@ -190,7 +190,9 @@ public class AesDecryptPage {
 
         JPanel panel = Panel.init(panelName, originAreaWidth, originAreaHeight);
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panel.add(originArea);
+//        panel.add(originArea);
+        JScrollPane scrollPane = TextArea.putIntoScrollbar(originArea, new Dimension(originAreaWidth-5, originAreaHeight-5));
+        panel.add(scrollPane);
 
         return panel;
     }
@@ -246,7 +248,8 @@ public class AesDecryptPage {
 
         JPanel panel = Panel.init(panelName, decryptAreaWidth, decryptAreaHeight);
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panel.add(decryptArea);
+        JScrollPane scrollPane = TextArea.putIntoScrollbar(decryptArea, new Dimension(decryptAreaWidth-5, decryptAreaHeight-5));
+        panel.add(scrollPane);
 
         return panel;
     }
