@@ -1,4 +1,4 @@
-package com.briskhu.utilsingle.aes;
+package com.briskhu.utilsingle.aes.algorithm;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,10 +7,10 @@ import org.slf4j.LoggerFactory;
  * <p/>
  *
  * @author Brisk Hu
- * created on 2019-11-09
+ * created on 2019-11-10
  **/
-public class AesDecryptPage {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AesDecryptPage.class);
+public class AesUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AesUtil.class);
 
     /* ---------------------------------------- fileds ---------------------------------------- */
 

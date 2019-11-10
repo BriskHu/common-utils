@@ -4,13 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p/>
+ * Aes解密操作界面<p/>
  *
  * @author Brisk Hu
  * created on 2019-11-09
  **/
-public class AesEncryptPage {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AesEncryptPage.class);
+public class AesDecryptPage {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AesDecryptPage.class);
 
     /* ---------------------------------------- fileds ---------------------------------------- */
 
