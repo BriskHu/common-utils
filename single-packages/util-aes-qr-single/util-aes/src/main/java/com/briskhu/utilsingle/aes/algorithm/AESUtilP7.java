@@ -1,4 +1,4 @@
-package com.briskhu.utilsingle.aes;
+package com.briskhu.utilsingle.aes.algorithm;
 
 import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -22,7 +22,7 @@ public class AESUtilP7 {
 
     private static final Charset DATA_CHARSET = StandardCharsets.UTF_8;
 
-    private static final String offset = "8540a807b1f44920";
+    private static String offset = "8540a807b1f44920";
     static {
         Security.addProvider(new BouncyCastleProvider());
     }
@@ -80,6 +80,13 @@ public class AESUtilP7 {
         return doFinal(key, offset.getBytes(), data, Cipher.DECRYPT_MODE);
     }
 
+    public static String getOffset() {
+        return offset;
+    }
+
+    public static void setOffset(String offset) {
+        AESUtilP7.offset = offset;
+    }
 
     public static void main(String[] args) throws GeneralSecurityException, UnsupportedEncodingException {
         String originText = "{\"mac\":\"MAC000080009\",\"manufactor\":\"久氏集团\",\"model\":\"守心\",\"region\":\"510000\",\"timestamp\":\"1558430897135\"}";

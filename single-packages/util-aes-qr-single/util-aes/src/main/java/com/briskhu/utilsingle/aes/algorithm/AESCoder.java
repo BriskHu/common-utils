@@ -1,4 +1,4 @@
-package com.briskhu.utilsingle.aes;
+package com.briskhu.utilsingle.aes.algorithm;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;

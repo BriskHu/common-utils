@@ -1,4 +1,4 @@
-package com.briskhu.utilsingle.aes;
+package com.briskhu.utilsingle.aes.uipage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
