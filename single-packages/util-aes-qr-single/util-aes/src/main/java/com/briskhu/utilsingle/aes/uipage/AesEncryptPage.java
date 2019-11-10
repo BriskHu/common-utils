@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -102,6 +103,10 @@ public class AesEncryptPage {
     private int encryptAreaHeight = 280;
     private String encryptResult = null;
 
+    private JPanel authorPanel = null;
+    private JLabel authorLabel = null;
+    private JLabel versionLabel = null;
+
 
     /* ---------------------------------------- methods ---------------------------------------- */
 
@@ -119,7 +124,9 @@ public class AesEncryptPage {
         row4Panel = createRow4Panel("row4Panel");
         row5Panel = createRow5Panel("row5Panel");
         row6Panel = createRow6Panel("row6Panel");
-        rowPanels = new JPanel[]{row1Panel, row2Panel, row3Panel, row4Panel, row5Panel, row6Panel};
+        authorPanel = createAuthorPanel("authorPanel");
+        rowPanels = new JPanel[]{row1Panel, row2Panel, row3Panel, row4Panel, row5Panel,
+                row6Panel, authorPanel};
 
         LOGGER.debug("[createAesEncryptPagePanel] panel: (x,y)=({},{})", panel.getX(), panel.getY());
         row1Panel.setLocation(panel.getX() + panelGap, panel.getY() + panelGap);
@@ -137,6 +144,9 @@ public class AesEncryptPage {
         row5Panel.setSize(120, textBarHeight);
         row6Panel.setLocation(130, textBarHeight * 2 + originAreaHeight + panelGap * 4);
         row6Panel.setSize(encryptAreaWidth, encryptAreaHeight);
+
+        authorPanel.setSize(textBarWidth, textBarHeight);
+        authorPanel.setLocation(10, frameHeight - 20);
 
         GuiDebugTools.printBorderByToggle(Color.GREEN, rowPanels);
         LOGGER.debug("[createAesEncryptPagePanel] panel: w = {}, h = {}", panel.getWidth(), panel.getHeight());
@@ -191,7 +201,7 @@ public class AesEncryptPage {
         JPanel panel = Panel.init(panelName, originAreaWidth, originAreaHeight);
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 //        panel.add(originArea);
-        JScrollPane scrollPane = TextArea.putIntoScrollbar(originArea, new Dimension(originAreaWidth-5, originAreaHeight-5));
+        JScrollPane scrollPane = TextArea.putIntoScrollbar(originArea, new Dimension(originAreaWidth - 5, originAreaHeight - 5));
         panel.add(scrollPane);
 
         return panel;
@@ -248,8 +258,29 @@ public class AesEncryptPage {
 
         JPanel panel = Panel.init(panelName, encryptAreaWidth, encryptAreaHeight);
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JScrollPane scrollPane = TextArea.putIntoScrollbar(encryptArea, new Dimension(encryptAreaWidth-5, encryptAreaHeight-5));
+        JScrollPane scrollPane = TextArea.putIntoScrollbar(encryptArea, new Dimension(encryptAreaWidth - 5, encryptAreaHeight - 5));
         panel.add(scrollPane);
+
+        return panel;
+    }
+
+    private JPanel createAuthorPanel(String panelName) {
+        authorLabel = Label.init("Developer:  Brisk Hu", FSIZE_NORMAL);
+        versionLabel = Label.init("Version:  1.0.0", FSIZE_NORMAL);
+
+        Box box = Box.createHorizontalBox();
+        box.add(Box.createHorizontalStrut(30));
+        box.add(authorLabel);
+        box.add(Box.createHorizontalStrut(80));
+        box.add(versionLabel);
+//        box.add(Box.createHorizontalGlue());
+        JPanel bottomBarPanel = Panel.initForBox(panelName, 500, 30, box);
+
+        GuiDebugTools.printBorderByToggle(Color.RED, authorLabel, versionLabel, box);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        panel.add(bottomBarPanel);
 
         return panel;
     }
