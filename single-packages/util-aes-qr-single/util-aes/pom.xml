@@ -66,6 +66,30 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- copy cli jar to the release-package -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-jar</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <copy todir="../${releaseDirectory}">
+                                    <fileset dir="target">
+                                        <include name="*.jar"/>
+                                    </fileset>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
         <finalName>util-aes</finalName>
     </build>

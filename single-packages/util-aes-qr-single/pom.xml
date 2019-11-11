@@ -23,6 +23,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <releaseDirectory>release-package</releaseDirectory>
+        <thirdJarDirectory>attachment</thirdJarDirectory>
     </properties>
 
 
@@ -44,8 +46,7 @@
             <scope>test</scope>
         </dependency>
 
-
-
     </dependencies>
+
 
 </project>
