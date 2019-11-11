@@ -63,7 +63,7 @@ public class OsTools {
      */
     public static String initDefaultDir(String osName) {
         if (osName.equals(WINDOW)) {
-            return "C:\\Users\\Administrator\\Desktop\\QrImages";
+            return System.getProperty("user.dir")+"\\QrImages";
         } else {
             return System.getProperty("user.dir")+"/QrImages";
         }

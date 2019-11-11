@@ -7,6 +7,7 @@ import com.briskhu.common.jgui.operation.Panel;
 import com.briskhu.common.jgui.operation.TextArea;
 import com.briskhu.common.jgui.other.FileTypeUtils;
 import com.briskhu.common.jgui.other.GuiDebugTools;
+import com.briskhu.common.jgui.other.OsTools;
 import com.google.zxing.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,27 @@ public class ScanQrPage {
     private String qrDecryptedText;
     private String filename;
     private File choosedFile;
-    private final String DEFAULT_PATH = "C:\\Users\\Administrator\\Desktop";
+    private static String DEFAULT_PATH;
+
+    static {
+        OsTools.printOsInfo();
+        DEFAULT_PATH = OsTools.initDefaultDir();
+        File defaultDir = new File(DEFAULT_PATH);
+        if (!defaultDir.exists()) {
+            int tryTimes = 0;
+            while (!defaultDir.mkdir() && tryTimes < 3) {
+                defaultDir.mkdir();
+                tryTimes++;
+            }
+            if (tryTimes == 3) {
+                LOGGER.error("[static code] 3次创建默认文件夹均失败，退出程序");
+                System.exit(-1);
+            } else {
+                DEFAULT_PATH = defaultDir.getAbsolutePath();
+            }
+        }
+    }
+
 
     private JFrame jFrame = null;
     private final String FRAME_TITLE = "扫描二维码";
