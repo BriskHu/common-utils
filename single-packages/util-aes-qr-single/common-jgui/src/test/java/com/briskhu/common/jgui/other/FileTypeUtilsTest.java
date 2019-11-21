@@ -46,13 +46,13 @@ public class FileTypeUtilsTest {
         file = "C:\\Users\\Administrator\\Desktop\\Note.txt";
         fileType = FileTypeUtils.getFileType(file);
         System.out.println("Note.txt:" + fileType);
-        file = "C:\\Users\\Administrator\\Desktop\\中国电信2018年智能家居平台建设工程系统逻辑设计说明书v1.0.docx";
+        file = "C:\\Users\\Administrator\\Desktop\\0.docx";
         fileType = FileTypeUtils.getFileType(file);
-        System.out.println("中国电信2018年智能家居平台建设工程系统逻辑设计说明书v1.0.docx:" + fileType);
+        System.out.println("0.docx:" + fileType);
 
-        file = "C:\\Users\\Administrator\\Desktop\\T2偶数层2004版.dwg";
+        file = "C:\\Users\\Administrator\\Desktop\\2004版.dwg";
         fileType = FileTypeUtils.getFileType(file);
-        System.out.println("T2偶数层2004版.dwg:" + fileType);
+        System.out.println("2004版.dwg:" + fileType);
     }
 
     public static String getFileType(String filename) {

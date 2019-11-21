@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 
 /**
@@ -81,6 +80,21 @@ public class Geometry {
         return new Point(x, y);
     }
 
+    /**
+     * 获取随着分辨率自适应调整的尺寸
+     * @param expectedWidth
+     * @param expectedHeight
+     * @return
+     */
+    public static Dimension getAdaptableSize(int expectedWidth, int expectedHeight) {
+        int screenResolution = Toolkit.getDefaultToolkit().getScreenResolution();
+        double screenWidth = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+        double screenHeight = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        LOGGER.debug("screenResolution = {}, screenWidth = {}, screenHeight = {}", screenResolution, screenWidth, screenHeight);
+
+
+        return new Dimension((int)screenWidth, (int)screenHeight);
+    }
 
 }
 
