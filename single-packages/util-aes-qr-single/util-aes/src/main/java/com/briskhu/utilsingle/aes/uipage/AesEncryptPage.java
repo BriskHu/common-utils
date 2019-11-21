@@ -14,12 +14,10 @@ import com.briskhu.utilsingle.aes.algorithm.AesUtil;
 import com.briskhu.utilsingle.aes.constant.AesModeEnum;
 import com.briskhu.utilsingle.aes.constant.KeyEncodingMode;
 import org.apache.commons.codec.binary.Base64;
-import org.bouncycastle.jce.provider.symmetric.Grainv1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -63,7 +61,7 @@ public class AesEncryptPage {
     private JLabel offsetLabel = null;
     private String OFFSET_HINT = "偏移量";
     private JTextField offsetField = null;
-    private String INPUT_OFFSET_HINT = "请输入偏移量";
+    private String INPUT_OFFSET_HINT = "请输入16位的偏移量";
     private String offset = null;
     private String NO_OFFSET = "偏移量为空";
 
@@ -102,6 +100,13 @@ public class AesEncryptPage {
     private int encryptAreaWidth = 625;
     private int encryptAreaHeight = 280;
     private String encryptResult = null;
+    private String FAILED_ENCRYPT = "加密失败，请检查加密秘钥、偏移量是否正确。";
+
+    private JPanel row7Panel = null;
+    private JButton getTimestampBtn = null;
+    private String GET_TIMISTAMP_HINT = "获取时间戳";
+    private JTextField timestampField = null;
+    private long nowTimestamp = 0;
 
     private JPanel authorPanel = null;
     private JLabel authorLabel = null;
@@ -111,11 +116,12 @@ public class AesEncryptPage {
     /* ---------------------------------------- methods ---------------------------------------- */
 
     /**
-     * 生成二维码页面的面板
+     * 生成Aes加密页面的面板
      *
      * @return
      */
     public JPanel createAesEncryptPagePanel() {
+//        GuiDebugTools.setPrintBorderToggle(true);
         panel = new JPanel(null);
 
         row1Panel = createRow1Panel("row1Panel");
@@ -124,9 +130,10 @@ public class AesEncryptPage {
         row4Panel = createRow4Panel("row4Panel");
         row5Panel = createRow5Panel("row5Panel");
         row6Panel = createRow6Panel("row6Panel");
+        row7Panel = createRow7Panel("row7Panel");
         authorPanel = createAuthorPanel("authorPanel");
         rowPanels = new JPanel[]{row1Panel, row2Panel, row3Panel, row4Panel, row5Panel,
-                row6Panel, authorPanel};
+                row6Panel, row7Panel, authorPanel};
 
         LOGGER.debug("[createAesEncryptPagePanel] panel: (x,y)=({},{})", panel.getX(), panel.getY());
         row1Panel.setLocation(panel.getX() + panelGap, panel.getY() + panelGap);
@@ -144,6 +151,9 @@ public class AesEncryptPage {
         row5Panel.setSize(120, textBarHeight);
         row6Panel.setLocation(130, textBarHeight * 2 + originAreaHeight + panelGap * 4);
         row6Panel.setSize(encryptAreaWidth, encryptAreaHeight);
+
+        row7Panel.setLocation(10, textBarHeight * 2 + originAreaHeight * 2 + panelGap * 5);
+        row7Panel.setSize(encryptAreaWidth, textBarHeight);
 
         authorPanel.setSize(textBarWidth, textBarHeight);
         authorPanel.setLocation(10, frameHeight - 20);
@@ -220,7 +230,7 @@ public class AesEncryptPage {
         encryptBtn.setPreferredSize(new Dimension(120, 40));
 
         String[] keyEncodingModes = new String[]{KeyEncodingMode.PLATIN.getEncodingName(), KeyEncodingMode.BASE64.getEncodingName()};
-        keyEncodingModeComb = ComboBox.initForString("keyEncodingModeComb", FSIZE_NORMAL, new Dimension(110, 10),
+        keyEncodingModeComb = ComboBox.initForString("keyEncodingModeComb", FSIZE_NORMAL, new Dimension(113, 10),
                 keyEncodingModes, new ItemListener() {
                     @Override
                     public void itemStateChanged(ItemEvent e) {
@@ -264,6 +274,27 @@ public class AesEncryptPage {
         return panel;
     }
 
+    private JPanel createRow7Panel(String panelName) {
+        getTimestampBtn = Button.init("getTimestampBtn", GET_TIMISTAMP_HINT, FSIZE_NORMAL, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LOGGER.debug("[actionPerformed] Button {} has been pressed", getTimestampBtn.getName());
+                doGetTimeBtn();
+            }
+        });
+        getTimestampBtn.setPreferredSize(new Dimension(135, 40));
+        nowTimestamp = System.currentTimeMillis();
+        timestampField = TextField.init("timestampField", 10, FSIZE_NORMAL, nowTimestamp + "");
+        timestampField.setPreferredSize(new Dimension(150, 35));
+
+        Box box = Box.createHorizontalBox();
+        box.add(getTimestampBtn);
+        box.add(Box.createHorizontalStrut(elementGap));
+        box.add(timestampField);
+
+        return Panel.initForBox(panelName, 180, 10, box);
+    }
+
     private JPanel createAuthorPanel(String panelName) {
         authorLabel = Label.init("Developer:  Brisk Hu", FSIZE_NORMAL);
         versionLabel = Label.init("Version:  1.0.0", FSIZE_NORMAL);
@@ -287,27 +318,31 @@ public class AesEncryptPage {
 
     public void doEncryptBtn() {
         encryptResult = null;
-        encryptArea.setText("null");
-        encryptArea.validate();
 
         if (checkParams()) {
-            if (aesMode.equals(AesModeEnum.ALL_DEFAULT.getModeName())) {
-                try {
+            try {
+                if (aesMode.equals(AesModeEnum.ALL_DEFAULT.getModeName())) {
                     if (keyEncodingMode.equals(KeyEncodingMode.PLATIN.getEncodingName())) {
                         encryptResult = new String(Base64.encodeBase64(AESCoder.encrypt(originText.getBytes(), key.getBytes())));
                     } else {
                         encryptResult = new String(Base64.encodeBase64(AESCoder.encrypt(originText, key)));
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else if (aesMode.equals(AesModeEnum.CBCPKCS7.getModeName())) {
+                    AESUtilP7.setOffset(offset);
+                    encryptResult = AESUtilP7.encrypt(originText, key);
                 }
-            } else if (aesMode.equals(AesModeEnum.CBCPKCS7.getModeName())) {
-                AESUtilP7.setOffset(offset);
-                encryptResult = AESUtilP7.encrypt(originText, key);
+                LOGGER.info("[doEncryptBtn] encryptResult = {}\n", encryptResult);
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOGGER.error("[doEncryptBtn] 加密出错\n");
+                encryptResult = null;
             }
-            LOGGER.info("[doEncryptBtn] encryptResult = {}", encryptResult);
 
             encryptArea.setText(encryptResult);
+            if (encryptResult == null) {
+                JOptionPane.showMessageDialog(panel, FAILED_ENCRYPT, AesGuiMain.AES_EN_PAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+                encryptArea.setText(FAILED_ENCRYPT);
+            }
             encryptArea.validate();
         }
     }
@@ -359,6 +394,12 @@ public class AesEncryptPage {
 
         return result;
     }
+
+    public void doGetTimeBtn() {
+        timestampField.setText(System.currentTimeMillis() + "");
+        timestampField.validate();
+    }
+
 
     public void setJFrame(JFrame jFrame) {
         this.jFrame = jFrame;

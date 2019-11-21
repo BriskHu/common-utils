@@ -1,21 +1,24 @@
 package com.briskhu.utilsingle.aes.uipage;
 
-import com.briskhu.common.jgui.operation.Button;
+
 import com.briskhu.common.jgui.operation.ComboBox;
-import com.briskhu.common.jgui.operation.TextArea;
-import com.briskhu.common.jgui.operation.TextField;
 import com.briskhu.common.jgui.operation.Label;
 import com.briskhu.common.jgui.operation.Panel;
 import com.briskhu.common.jgui.other.GuiDebugTools;
+import com.briskhu.common.jgui.other.YmlFileProcessor;
 import com.briskhu.utilsingle.aes.AesGuiMain;
 import com.briskhu.utilsingle.aes.algorithm.AESCoder;
 import com.briskhu.utilsingle.aes.algorithm.AESUtilP7;
 import com.briskhu.utilsingle.aes.algorithm.AesUtil;
 import com.briskhu.utilsingle.aes.constant.AesModeEnum;
 import com.briskhu.utilsingle.aes.constant.KeyEncodingMode;
+import com.briskhu.utilsingle.aesqrcommon.model.ApplicationConfigModel;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.briskhu.common.jgui.operation.TextArea;
+import com.briskhu.common.jgui.operation.TextField;
+import com.briskhu.common.jgui.operation.Button;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,19 +28,18 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 /**
- * Aes解密操作界面<p/>
+ * Aes密码本操作界面<p/>
  *
  * @author Brisk Hu
- * created on 2019-11-09
+ * created on 2019-11-12
  **/
-public class AesDecryptPage {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AesDecryptPage.class);
+public class CodebookPage {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CodebookPage.class);
 
-    /* ---------------------------------------- fileds ---------------------------------------- */
     private String aesMode = null;
 
     private JFrame jFrame = null;
-    private final String FRAME_TITLE = "AES解密";
+    private final String FRAME_TITLE = "AES密码本";
     private int frameWidth = 800;
     private int frameHeight = 800;
     private JPanel panel = null;
@@ -51,74 +53,124 @@ public class AesDecryptPage {
      */
     private final int FSIZE_NORMAL = 20;
 
+    private JLabel blankCodebookLabel = null;
+    private String NO_CODEBOOK_HINT = "尚未创建你的专属密码本";
+    private JButton createCodebookBtn = null;
+    private String CREATE_CODEBOOK = "创建密码本";
+    private String ADD_CODEBOOK_PWD = "为密码本添加访问密码";
+    private String INPUT_CODEBOOK_PWD = "请输入密码本的访问密码";
+    private String NO_CODEBOOK_PWD = "密码本访问密码不能为空";
+    private String codebookPassword = null;
+    private String confFilename = null;
+
+
     private JPanel row1Panel = null;
     /**
      * AES解密方式
      */
+    private JLabel aesCorelativeLabel = null;
+    private String AES_CORELATIVE_HINT = "选择配置";
+    private JComboBox<String> aesCorelativeCombo = null;
+    private JLabel aesCorelativeNameLabel = null;
+    private String AES_CORELATIVE_NAME_HINT = "配置名称";
+    private String AES_CONFIG_NAME_REPEAT = "配置名称重复";
+
+    private JPanel row2Panel = null;
+    private JLabel aesCorelativeDescLabel = null;
+    private String AES_CORELATIVE_DESC_HINT = "配置描述";
+    private JTextField aesCorelativeDescField = null;
+
+    private JPanel row3Panel = null;
     private JLabel aesModeLabel = null;
-    private String MODE_HINT = "解密方式";
-    private JComboBox<String> aesModeCombo = null;
+    private String AES_MODE_HINT = "Aes模式";
+    private JTextField aesModeField = null;
+
+    private JPanel row4Panel = null;
     private JLabel offsetLabel = null;
     private String OFFSET_HINT = "偏移量";
     private JTextField offsetField = null;
-    private String INPUT_OFFSET_HINT = "请输入16位的偏移量";
-    private String offset = null;
-    private String NO_OFFSET = "偏移量为空";
-
-    private JPanel row2Panel = null;
-    private JLabel originLabel = null;
-    private String ORIGIN_HINT = "待解密字符";
-
-    private JPanel row3Panel = null;
-    private JTextArea originArea = null;
-    private String originText = null;
-    private int originAreaWidth = 625;
-    private int originAreaHeight = 280;
-    private String INPUT_ORIGIN_HINT = "请输入待解密内容";
-    private String NO_ORIGIN = "待解密内容为空";
-
-    private JPanel row4Panel = null;
-    private JLabel keyLabel = null;
-    private String KEY_HINT = "解密秘钥";
-    private String key = null;
-    private String NO_KEY = "解密秘钥为空";
-    private JTextField keyField = null;
-    private String INPUT_KEY_HINT = "请输入16/24/32位长度的解密秘钥";
-    private JComboBox<String> keyEncodingModeComb = null;
-    private String keyEncodingMode = null;
-    private String ILLEGAL_KEY_LENGTH = "解密秘钥长度不合法";
-
-    private JButton decryptBtn = null;
-    private String DECRYPT_BTN_HINT = "执行解密";
 
     private JPanel row5Panel = null;
-    private JLabel decryptLabel = null;
-    private String DECRYPT_HINT = "解密后结果";
+    private JLabel keyLabel = null;
+    private String KEY_HINT = "Aes秘钥";
+    private JTextField keyField = null;
 
     private JPanel row6Panel = null;
-    private JTextArea decryptArea = null;
-    private int decryptAreaWidth = 625;
-    private int decryptAreaHeight = 280;
-    private String decryptResult = null;
-    private String FAILED_DECRYPT = "解密失败，请检查解密秘钥、偏移量是否正确。";
+    private JLabel keyModeLabel = null;
+    private String KEY_MODE_HINT = "秘钥形式";
+    private JTextField keyModeField = null;
 
+    private JPanel row7Panel = null;
+    private JButton applyAesConfigBtn = null;
+    private String APPLY_AES_CONFIG_HINT = "使用该Aes配置";
 
     /* ---------------------------------------- methods ---------------------------------------- */
 
     /**
-     * 生成Aes解密页面的面板
+     * 创建空白密码本界面
+     * @return
+     */
+    public JPanel createBlankCodebookPage(){
+        panel = new JPanel();
+        BorderLayout layout = new BorderLayout();
+        panel.setLayout(layout);
+
+
+        blankCodebookLabel = Label.init(NO_CODEBOOK_HINT, "blankCodebookLabel", FSIZE_NORMAL);
+        createCodebookBtn = Button.init("createCodebookBtn", CREATE_CODEBOOK, FSIZE_NORMAL, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                codebookPassword = JOptionPane.showInputDialog(panel, ADD_CODEBOOK_PWD, FRAME_TITLE, JOptionPane.PLAIN_MESSAGE);
+                confFilename = System.getProperty("user.dir") + "/conf/aes-qr/application.yml";
+                createCodebookConfigFile(confFilename, codebookPassword);
+            }
+        });
+
+        Box box = Box.createHorizontalBox();
+        box.add(blankCodebookLabel);
+        box.add(Box.createHorizontalStrut(elementGap*2));
+        box.add(createCodebookBtn);
+        box.setPreferredSize(new Dimension(300, textBarHeight));
+
+        panel.add(box, BorderLayout.NORTH);
+
+        return panel;
+    }
+
+    /**
+     * 创建密码本配置文件
+     * @param confFilename
+     * @param codebookPassword
+     */
+    private void createCodebookConfigFile(String confFilename, String codebookPassword){
+        ApplicationConfigModel applicationConfigModel = new ApplicationConfigModel();
+        applicationConfigModel.setPassword(codebookPassword);
+
+        YmlFileProcessor.createYmlFile(confFilename, applicationConfigModel);
+
+    }
+
+
+    /**
+     * 增加Aes加密信息配置的操作页面
+     */
+    private void addAesCorelativeConfigPage(){
+
+    }
+
+
+    /**
+     * 生成密码本页面的面板
      *
      * @return
      */
-    public JPanel createAesDecryptPagePanel() {
+    public JPanel createCodebookPagePanel() {
         panel = new JPanel(null);
 
         row1Panel = createRow1Panel("row1Panel");
         row2Panel = createRow2Panel("row2Panel");
         row3Panel = createRow3Panel("row3Panel");
         row4Panel = createRow4Panel("row4Panel");
-        row5Panel = createRow5Panel("row5Panel");
-        row6Panel = createRow6Panel("row6Panel");
         rowPanels = new JPanel[]{row1Panel, row2Panel, row3Panel, row4Panel, row5Panel, row6Panel};
 
         LOGGER.debug("[createAesDecryptPagePanel] panel: (x,y)=({},{})", panel.getX(), panel.getY());
@@ -147,25 +199,43 @@ public class AesDecryptPage {
 
 
     private JPanel createRow1Panel(String panelName) {
+
+
+
+
         aesModeLabel = Label.init(MODE_HINT, FSIZE_NORMAL);
         String[] aesModes = new String[]{AesModeEnum.ALL_DEFAULT.getModeName(), AesModeEnum.CBCPKCS7.getModeName()};
-        aesModeCombo = ComboBox.initForString("imgFormat", FSIZE_NORMAL, new Dimension(190, 10),
+
+
+        private JPanel row1Panel = null;
+        /**
+         * AES解密方式
+         */
+        private JLabel aesCorelativeLabel = null;
+        private String AES_CORELATIVE_HINT = "选择配置";
+        private JComboBox<String> aesCorelativeCombo = null;
+        private JLabel aesCorelativeNameLabel = null;
+        private String AES_CORELATIVE_NAME_HINT = "配置名称";
+        private String AES_CONFIG_NAME_REPEAT = "配置名称重复";
+
+
+        aesCorelativeCombo = ComboBox.initForString("imgFormat", FSIZE_NORMAL, new Dimension(190, 10),
                 aesModes, new ItemListener() {
                     @Override
                     public void itemStateChanged(ItemEvent e) {
-                        aesMode = (String) aesModeCombo.getSelectedItem();
+                        aesMode = (String) aesCorelativeCombo.getSelectedItem();
                     }
                 });
-        aesModeCombo.setSelectedIndex(0);
+        aesCorelativeCombo.setSelectedIndex(0);
         aesMode = aesModes[0];
 
         offsetLabel = Label.init(OFFSET_HINT, FSIZE_NORMAL);
-        offsetField = com.briskhu.common.jgui.operation.TextField.init("originText", 21, FSIZE_NORMAL, INPUT_OFFSET_HINT);
+        offsetField = TextField.init("originText", 21, FSIZE_NORMAL, INPUT_OFFSET_HINT);
 
         Box box = Box.createHorizontalBox();
         box.add(aesModeLabel);
         box.add(Box.createHorizontalStrut(elementGap));
-        box.add(aesModeCombo);
+        box.add(aesCorelativeCombo);
         box.add(Box.createHorizontalStrut(elementGap * 5));
         box.add(offsetLabel);
         box.add(Box.createHorizontalStrut(elementGap));
@@ -175,16 +245,16 @@ public class AesDecryptPage {
     }
 
     private JPanel createRow2Panel(String panelName) {
-        originLabel = Label.init(ORIGIN_HINT, FSIZE_NORMAL);
+        aesCorelativeNameLabel = Label.init(AES_CORELATIVE_NAME_HINT, FSIZE_NORMAL);
         JPanel panel = Panel.init(panelName, 100, 10);
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panel.add(originLabel);
+        panel.add(aesCorelativeNameLabel);
 
         return panel;
     }
 
     private JPanel createRow3Panel(String panelName) {
-        originArea = com.briskhu.common.jgui.operation.TextArea.init(INPUT_ORIGIN_HINT, "originArea", FSIZE_NORMAL);
+        originArea = TextArea.init(INPUT_ORIGIN_HINT, "originArea", FSIZE_NORMAL);
         originArea.setPreferredSize(new Dimension(originAreaWidth, originAreaHeight));
         originArea.enableInputMethods(true);
 
@@ -198,8 +268,8 @@ public class AesDecryptPage {
     }
 
     private JPanel createRow4Panel(String panelName) {
-        keyLabel = Label.init(KEY_HINT, FSIZE_NORMAL);
-        keyField = TextField.init("keyField", 22, FSIZE_NORMAL, INPUT_KEY_HINT);
+        offsetLabel = Label.init(OFFSET_HINT, FSIZE_NORMAL);
+        offsetField = TextField.init("offsetField", 22, FSIZE_NORMAL, INPUT_KEY_HINT);
         decryptBtn = Button.init("decryptBtn", DECRYPT_BTN_HINT, FSIZE_NORMAL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -221,9 +291,9 @@ public class AesDecryptPage {
         keyEncodingMode = keyEncodingModes[0];
 
         Box box = Box.createHorizontalBox();
-        box.add(keyLabel);
+        box.add(offsetLabel);
         box.add(Box.createHorizontalStrut(elementGap));
-        box.add(keyField);
+        box.add(offsetField);
         box.add(Box.createHorizontalStrut(elementGap));
         box.add(keyEncodingModeComb);
         box.add(Box.createHorizontalStrut(elementGap * 5));
@@ -233,10 +303,10 @@ public class AesDecryptPage {
     }
 
     private JPanel createRow5Panel(String panelName) {
-        decryptLabel = Label.init(DECRYPT_HINT, FSIZE_NORMAL);
+        keyLabel = Label.init(KEY_HINT, FSIZE_NORMAL);
         JPanel panel = Panel.init(panelName, 100, 10);
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panel.add(decryptLabel);
+        panel.add(keyLabel);
 
         return panel;
     }
@@ -289,7 +359,7 @@ public class AesDecryptPage {
     private boolean checkParams() {
         boolean result = false;
         originText = originArea.getText();
-        key = keyField.getText();
+        key = offsetField.getText();
         offset = offsetField.getText();
         LOGGER.debug("[checkParams] originText = {}, key = {}, offset = {}, keyEncodingMode = {}", originText, key, offset, keyEncodingMode);
 
@@ -303,8 +373,8 @@ public class AesDecryptPage {
         if (key.equals("")) {
             LOGGER.error("[checkParams] key is null");
             JOptionPane.showMessageDialog(panel, NO_KEY, AesGuiMain.AES_DE_PAGE_TITLE, JOptionPane.ERROR_MESSAGE);
-            keyField.setText(INPUT_KEY_HINT);
-            keyField.validate();
+            offsetField.setText(INPUT_KEY_HINT);
+            offsetField.validate();
             return false;
         }
 
@@ -317,8 +387,8 @@ public class AesDecryptPage {
         if (!AesUtil.isKeySizeValid(keyBytes.length)) {
             LOGGER.error("[checkParams] The length of key is illegal.");
             JOptionPane.showMessageDialog(panel, ILLEGAL_KEY_LENGTH, AesGuiMain.AES_DE_PAGE_TITLE, JOptionPane.ERROR_MESSAGE);
-            keyField.setText(INPUT_KEY_HINT);
-            keyField.validate();
+            offsetField.setText(INPUT_KEY_HINT);
+            offsetField.validate();
             return false;
         }
 
