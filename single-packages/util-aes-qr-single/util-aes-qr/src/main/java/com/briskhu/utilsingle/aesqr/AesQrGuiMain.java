@@ -5,6 +5,7 @@ import com.briskhu.common.jgui.other.GuiContext;
 import com.briskhu.common.jgui.other.GuiDebugTools;
 import com.briskhu.utilsingle.aes.uipage.AesDecryptPage;
 import com.briskhu.utilsingle.aes.uipage.AesEncryptPage;
+import com.briskhu.utilsingle.aes.uipage.CodebookPage;
 import com.briskhu.utilsingle.qr.CreateQrPage;
 import com.briskhu.utilsingle.qr.ScanQrPage;
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ public class AesQrGuiMain {
     public static final String AES_DE_PAGE_TITLE = "Aes解密";
     private final String CREATE_QR_PAGE_TITLE = "生成二维码";
     private final String SCAN_QR_PAGE_TITLE = "扫描二维码";
+    private final String CODEBOOK_PAGE_TITLE = "Aes密码本";
 
     private static volatile AesQrGuiMain instance = null;
     private static JFrame mainWindow;
@@ -75,10 +77,14 @@ public class AesQrGuiMain {
         ScanQrPage scanQrPage = new ScanQrPage();
         scanQrPage.setJFrame(mainWindow);
 
+        CodebookPage codebookPage = new CodebookPage();
+        codebookPage.setJFrame(mainWindow);
+
         tabbedPane.add(AES_EN_PAGE_TITLE, aesEncryptPage.createAesEncryptPagePanel());
         tabbedPane.add(AES_DE_PAGE_TITLE, aesDecryptPage.createAesDecryptPagePanel());
         tabbedPane.add(CREATE_QR_PAGE_TITLE, createQrPage.createQrPagePanel());
         tabbedPane.add(SCAN_QR_PAGE_TITLE, scanQrPage.scanQrPagePanel());
+        tabbedPane.add(CODEBOOK_PAGE_TITLE, codebookPage.createBlankCodebookPage());
 
         tabbedPane.addChangeListener(new ChangeListener() {
             @Override
