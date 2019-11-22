@@ -69,7 +69,7 @@ public class DatabaseController {
      */
     @GetMapping("/useDatabase/{dbName}")
     public ResponseEntity<String> useDatabase(@PathVariable("dbName") String dbName){
-        LOGGER.info("[useDatabase] start...");
+        LOGGER.info("[useDatabase] 入参：dbName = {}", dbName);
         return databaseService.useDatabase(dbName);
     }
 

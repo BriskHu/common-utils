@@ -1,5 +1,6 @@
 package com.briskhu.util.db.admin.serverimpl.service;
 
+import com.alibaba.fastjson.JSON;
 import com.briskhu.util.db.admin.serverimpl.mapper.DatabaseMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 /**
@@ -54,7 +57,9 @@ public class DatabaseService {
      */
     public ResponseEntity<String> showDatabases(){
         LOGGER.info("[showDatabases] start...");
-        ResponseEntity<String> result = new ResponseEntity<String>(databaseMapper.showDatabases().toString(), HttpStatus.OK);
+        List<String> dbList = databaseMapper.showDatabases();
+        String dbListStr = JSON.toJSONString(dbList);
+        ResponseEntity<String> result = new ResponseEntity<String>(dbListStr, HttpStatus.OK);
         return result;
     }
 
@@ -86,7 +91,9 @@ public class DatabaseService {
      */
     public ResponseEntity<String> showTables(){
         LOGGER.info("[showTables] start...");
-        ResponseEntity<String> result = new ResponseEntity<String>(databaseMapper.showTables().toString(), HttpStatus.OK);
+        List<String> tableList = databaseMapper.showTables();
+        String tableListStr = JSON.toJSONString(tableList);
+        ResponseEntity<String> result = new ResponseEntity<String>(tableListStr, HttpStatus.OK);
         return result;
     }
 
