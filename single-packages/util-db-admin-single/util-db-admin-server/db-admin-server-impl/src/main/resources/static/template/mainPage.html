@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<form class="layui-form" name="myform" lay-filter="dbTableListFilter" method="post" action="">
+<form class="layui-form" name="selectDbTableForm" lay-filter="dbTableListFilter" method="post" action="">
     <div class="layui-form-item">
         <label class="layui-form-label" style="width: 100px;">使用的数据库</label>
         <div class="layui-input-inline" style="width: 300px;">
@@ -26,9 +26,11 @@
             </select>
         </div>
     </div>
-
 </form>
 
+<form class="layui-form" name="dataForm" lay-filter="dataListFilter" >
+
+</form>
 
 <script src="../js/config.js" type="text/javascript"></script>
 
@@ -168,6 +170,8 @@
                 for (var i = 0; i < queriedTableList.length; i++) {
                     option += "<option value='" + queriedTableList[i] + "'>" + queriedTableList[i] + "</option>";
                 }
+
+                currentTable = queriedTableList[0];
                 $("#tableListId").html(option);
                 form.render('select', 'dbTableListFilter');
             },

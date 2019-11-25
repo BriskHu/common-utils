@@ -84,12 +84,15 @@ public class DatabaseController {
         return databaseService.showTables();
     }
 
-    @GetMapping("/layuiTestPage")
-    public String layuiTestPage(){
-        LOGGER.info("[layuiTestPage] start...");
-
-        return "layuiTest";
+    /**
+     * 获取指定表的所有字段
+     * @param tableName
+     * @return
+     */
+    public ResponseEntity<String> showFields(String tableName){
+        return null;
     }
+
 
 
 }

@@ -14,7 +14,7 @@
 
 ### 获取操作主界面
 
-**url：** ${BaseUrl}/database/layuiTestPage
+**url：** ${BaseUrl}/ui/mainPage
 
 **请求方式：** http + get  
 
