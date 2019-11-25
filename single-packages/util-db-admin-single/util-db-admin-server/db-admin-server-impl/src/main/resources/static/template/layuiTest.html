@@ -10,16 +10,16 @@
 </head>
 <body>
 
-<form class="layui-form" name="myform" method="post" action="">
+<form class="layui-form" name="myform" lay-filter="dbTableListFilter" method="post" action="">
     <div class="layui-form-item">
-        <label class="layui-form-label" style="width: 0px;">使用的数据库</label>
+        <label class="layui-form-label" style="width: 100px;">使用的数据库</label>
         <div class="layui-input-inline" style="width: 300px;">
             <select name="dbListName" lay-filter="dbListFilter" id="dbListId">
                 <option value="">请选择数据库</option>
             </select>
         </div>
 
-        <label class="layui-form-label" style="width: 0px;">执行操作的表</label>
+        <label class="layui-form-label" style="width: 100px;">执行操作的表</label>
         <div class="layui-input-inline" style="width: 500px;">
             <select name="tableListName" lay-filter="tableListFilter" id="tableListId">
                 <option value="">请选择要操作的表</option>
@@ -30,27 +30,47 @@
 </form>
 
 
-<!--<script src="../layui/layui.all.js" charset="utf-8"></script>-->
 <script src="../js/config.js" type="text/javascript"></script>
 
 <script>
-    conf.includeJs(conf.jQuery);
-    conf.includeJs(conf.layuiAll);
-    // conf.includeJsWithCharset(conf.layuiAll, conf.utf8);
+    var currentDatabase = "";
+    var currentTable = "";
+
+    $(document).ready(function () {
+        console.info("[ready] page load finished.");
+        layui.use(['form'], function () {
+            var form = layui.form;
+            getDbList(form);
+        })
+    });
 
     layui.use(['element', 'layer', 'form'], function () {
         var form = layui.form,
             layer = layui.layer;
 
         form.on('select(dbListFilter)', function (dbName) {
-            layer.msg('go here');
-            if (dbName === null) {
-                getDbList(form, dbName);
-            } else if (dbName != undefined) {
-                getTableList(form, dbName);
+            console.info("[dbListFilter] dbName=" + dbName);
+
+            if (Object.is(dbName.value, "undefined") || Object.is(dbName.value, null)) {
+                getDbList(form);
+                useDatabase(form, currentDatabase);
+            } else {
+                useDatabase(form, dbName.value);
             }
-            layer.msg('end');
+            getTableList(form, currentDatabase);
         });
+
+        form.on('select(tableListFilter)', function (tableName) {
+            console.info("[tableListFilter] tableName=" + tableName.value);
+
+            if (Object.is(tableName.value, "undefined") || Object.is(tableName.value, null)) {
+                layer.msg('没有选择数据表');
+                getTableList(form, currentDatabase);
+            } else {
+
+            }
+        })
+
 
     });
 
@@ -79,8 +99,10 @@
                 for (var i = 0; i < queriedDbList.length; i++) {
                     option += "<option value='" + queriedDbList[i] + "'>" + queriedDbList[i] + "</option>";
                 }
+
+                currentDatabase = queriedDbList[0];
                 $("#dbListId").html(option);     // 将option的拼接内容加入的select中，注意选择器是select的id。
-                form.render('select', 'dbListFilter');      // 重点：重新渲染select。
+                form.render('select', 'dbTableListFilter');      // 重点：重新渲染select。
             },
 
             error: function () {
@@ -92,30 +114,37 @@
 
     /**
      * 切换数据库
+     * @param form
      * @param dbName
-     * /
-     function useDatabase(form, dbName) {
-        console.debug("[useDatabase] form = " + form + ", dbName = " + dbName);
-        $.ajax({
-            type: 'get',
-            url: '${pageContext.request.contextPath}/dbadmin/database/useDatabase/' + dbName.field,
+     */
+    function useDatabase(form, dbName) {
+        console.info("[useDatabase] form = " + form + ", dbName = " + dbName);
 
-            beforeSend: function () {
-                console.log('[getTableList] 执行请求：url = ' + this.url);
-            },
+        if (dbName != null && dbName.length > 0) {
+            $.ajax({
+                type: 'get',
+                url: contextPath + '/database/useDatabase/' + dbName,
 
-            success: function (queriedTableList) {
-                getTableList(form, dbName);
-            },
+                beforeSend: function () {
+                    console.log('[useDatabase] 执行请求：url = ' + this.url);
+                },
 
-            error: function () {
-                console.error("[getTableList] 选择数据表出错");
-                alert("选择数据表出错。");
-            }
-        });
+                success: function (queriedTableList) {
+                    getTableList(form, dbName);
+                },
+
+                error: function () {
+                    console.error("[useDatabase] 切换数据库出错");
+                    alert("切换数据库出错。");
+                }
+            });
+        }else {
+            console.error("[useDatabase] 没有选择数据库");
+            alert("没有选择数据库。");
+        }
     }
 
-     /**
+    /**
      * 获取指定数据库的所有表
      * @param form
      * @param dbName
@@ -124,8 +153,8 @@
         console.debug("[getTableList] form = " + form + ", dbName = " + dbName);
         $.ajax({
             type: 'get',
-            url: conf.contextPath + '/showTables',
-            data: dbName.field,
+            url: contextPath + '/database/showTables',
+            // data: dbName,
 
             beforeSend: function () {
                 console.log('[getTableList] 执行请求：url = ' + this.url);
@@ -140,7 +169,7 @@
                     option += "<option value='" + queriedTableList[i] + "'>" + queriedTableList[i] + "</option>";
                 }
                 $("#tableListId").html(option);
-                form.render('select', 'tableListFilter');
+                form.render('select', 'dbTableListFilter');
             },
 
             error: function () {
@@ -149,6 +178,17 @@
             }
         });
     }
+
+    /**
+     * 获取指定表的所有字段
+     * @param form
+     * @param tableName
+     */
+    function getFieldList(form, tableName) {
+
+    }
+
+
 </script>
 
 </body>
