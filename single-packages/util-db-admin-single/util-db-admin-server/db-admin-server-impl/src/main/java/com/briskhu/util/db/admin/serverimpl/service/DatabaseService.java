@@ -2,6 +2,7 @@ package com.briskhu.util.db.admin.serverimpl.service;
 
 import com.alibaba.fastjson.JSON;
 import com.briskhu.util.db.admin.serverimpl.mapper.DatabaseMapper;
+import com.briskhu.util.web.result.BasicResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +54,10 @@ public class DatabaseService {
 
     /**
      * 查看全部数据库
+     *
      * @return
      */
-    public ResponseEntity<String> showDatabases(){
+    public ResponseEntity<String> showDatabases() {
         LOGGER.info("[showDatabases] start...");
         List<String> dbList = databaseMapper.showDatabases();
         String dbListStr = JSON.toJSONString(dbList);
@@ -65,17 +67,18 @@ public class DatabaseService {
 
     /**
      * 选择数据库
+     *
      * @param dbName
      * @return
      */
-    public ResponseEntity<String> useDatabase(String dbName){
+    public ResponseEntity<String> useDatabase(String dbName) {
         LOGGER.info("[useDatabase] start...");
         String opsResult = null;
         ResponseEntity<String> result = null;
-        try{
+        try {
             opsResult = databaseMapper.useDatabase(dbName);
             result = new ResponseEntity<String>(opsResult, HttpStatus.OK);
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("[useDatabase] e = {}", e);
             result = new ResponseEntity<>(opsResult, HttpStatus.BAD_REQUEST);
         }
@@ -87,9 +90,10 @@ public class DatabaseService {
 
     /**
      * 查看数据库中全部表
+     *
      * @return
      */
-    public ResponseEntity<String> showTables(){
+    public ResponseEntity<String> showTables() {
         LOGGER.info("[showTables] start...");
         List<String> tableList = databaseMapper.showTables();
         String tableListStr = JSON.toJSONString(tableList);
@@ -97,6 +101,26 @@ public class DatabaseService {
         return result;
     }
 
+    /**
+     * 获取指定数据库中指定表的所有字段
+     *
+     * @param dbName
+     * @param tableName
+     * @return
+     */
+    public ResponseEntity<String> showFields(String dbName, String tableName) {
+        LOGGER.info("[showFields] start...");
+        List<String> fieldsList = databaseMapper.showFields(dbName, tableName);
+        String fieldsListStr = JSON.toJSONString(fieldsList);
+        ResponseEntity<String> result = new ResponseEntity<>(fieldsListStr, HttpStatus.OK);
+        return result;
+    }
+
+    public BasicResult showFieldsByResult(String dbName, String tableName) {
+        LOGGER.info("[showFields] start...");
+        List<String> fieldsList = databaseMapper.showFields(dbName, tableName);
+        return BasicResult.ok().addData(fieldsList);
+    }
 
 
 }

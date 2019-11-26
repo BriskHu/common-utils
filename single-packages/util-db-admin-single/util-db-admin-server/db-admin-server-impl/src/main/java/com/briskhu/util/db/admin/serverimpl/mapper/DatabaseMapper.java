@@ -24,6 +24,7 @@ public interface DatabaseMapper {
 
     /**
      * 执行 show databases
+     *
      * @return
      */
     @Select("SHOW databases")
@@ -31,16 +32,30 @@ public interface DatabaseMapper {
 
     /**
      * 选择数据库
+     *
      * @param dbName
      * @return
      */
     @Select("USE ${dbName}")
-    String useDatabase(@Param("dbName")String dbName);
+    String useDatabase(@Param("dbName") String dbName);
 
     /**
      * 执行 show tables
+     *
      * @return
      */
     @Select("SHOW tables")
     List<String> showTables();
+
+    /**
+     * 获取指定数据库指定表的全部字段名称
+     *
+     * @return
+     */
+    @Select("SELECT COLUMN_NAME as columnName FROM information_schema.COLUMNS where TABLE_SCHEMA=#{dbName} and TABLE_NAME=#{tableName}")
+    List<String> showFields(@Param("dbName") String dbName, @Param("tableName") String tableName);
+
+
+
+
 }

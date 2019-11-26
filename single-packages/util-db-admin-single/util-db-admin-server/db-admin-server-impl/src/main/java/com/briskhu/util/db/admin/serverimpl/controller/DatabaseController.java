@@ -1,6 +1,7 @@
 package com.briskhu.util.db.admin.serverimpl.controller;
 
 import com.briskhu.util.db.admin.serverimpl.service.DatabaseService;
+import com.briskhu.util.web.result.BasicResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,7 @@ public class DatabaseController {
      */
     @GetMapping("/showDatabases")
     public ResponseEntity<String> showDatabases(){
-        LOGGER.info("[showDatabases] start...");
+        LOGGER.info("[showDatabases]  无入参。");
         return databaseService.showDatabases();
     }
 
@@ -80,17 +81,38 @@ public class DatabaseController {
     @ResponseBody
     @GetMapping("/showTables")
     public ResponseEntity<String> showTables(){
-        LOGGER.info("[showTables] start...");
+        LOGGER.info("[showTables]  无入参。");
         return databaseService.showTables();
     }
 
     /**
-     * 获取指定表的所有字段
+     * 获取指定数据库中指定表的所有字段
+     *
+     * @param dbName
      * @param tableName
      * @return
      */
-    public ResponseEntity<String> showFields(String tableName){
-        return null;
+    @ResponseBody
+    @GetMapping("/showFields")
+    public ResponseEntity<String> showFields(@RequestParam(name = "dbName", required = true)String dbName,
+                                             @RequestParam(name = "tableName", required = true) String tableName) {
+        LOGGER.info("[showFields] 入参：dbName = {}, tableName = {}", dbName, tableName);
+        return databaseService.showFields(dbName, tableName);
+    }
+
+    /**
+     * 获取指定数据库中指定表的所有字段
+     *
+     * @param dbName
+     * @param tableName
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/showFieldsByResult")
+    public BasicResult showFieldsByResult(@RequestParam(name = "dbName", required = true)String dbName,
+                                          @RequestParam(name = "tableName", required = true) String tableName) {
+        LOGGER.info("[showFields] 入参：dbName = {}, tableName = {}", dbName, tableName);
+        return databaseService.showFieldsByResult(dbName, tableName);
     }
 
 

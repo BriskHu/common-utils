@@ -101,6 +101,65 @@ http://127.0.0.1:9918/dbadmin/database/showTables
 
 ```
 
+### 获取指定数据库中指定表的所有字段
+
+**url：** ${BaseUrl}/database/showFields
+
+**请求方式：** http + get  
+
+**响应方式：** json
+
+**请求示例：**
+
+```
+http://127.0.0.1:9918/dbadmin/database/showFields?dbName=iotservice_mcloud&tableName=t_mc_brand
+```
+
+**返回示例：**
+
+```
+["id","manufacturer","brand","brand_name","trademark_number","mark_expires","markfile_copy","status","gmt_create","gmt_update"]
+```
+
+### showFieldsByResult
+
+**url：** ${BaseUrl}/database/showFieldsByResult
+
+**请求方式：** http + get  
+
+**响应方式：** json
+
+**请求示例：**
+
+```
+http://127.0.0.1:9918/dbadmin/database/showFieldsByResult?dbName=iotservice_mcloud&tableName=t_mc_brand
+```
+
+**返回示例：**
+
+```
+{
+    "code": "000000",
+    "msg": "请求成功",
+    "data": [
+        "id",
+        "manufacturer",
+        "brand",
+        "brand_name",
+        "trademark_number",
+        "mark_expires",
+        "markfile_copy",
+        "status",
+        "gmt_create",
+        "gmt_update"
+    ],
+    "success": true
+}
+```
+
+
+
+
 
 
 
