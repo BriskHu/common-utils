@@ -40,13 +40,13 @@ public class AESUtilP7 {
      */
     public static String encrypt(String originText, String key){
         try{
-            return new String(Base64.encodeBase64(AESUtilP7.encrypt(key.getBytes(DATA_CHARSET), originText.getBytes())));
+            return new String(Base64.encodeBase64(AESUtilP7.encrypt(originText.getBytes(DATA_CHARSET), key.getBytes(DATA_CHARSET))));
         }catch (GeneralSecurityException e){
             throw new RuntimeException("加密异常",e);
         }
     }
 
-    public static byte[] encrypt(byte[] key, byte[] data) throws GeneralSecurityException {
+    public static byte[] encrypt(byte[] data, byte[] key) throws GeneralSecurityException {
         return doFinal(key, offset.getBytes(), data, Cipher.ENCRYPT_MODE);
     }
 
@@ -66,17 +66,17 @@ public class AESUtilP7 {
      * @return
      */
     public static String decrypt(String planText, String key){
-        byte[] data = Base64.decodeBase64(planText);
+        byte[] data = Base64.decodeBase64(planText.getBytes(DATA_CHARSET));
         try {
             byte[] keyBytes = key.getBytes(DATA_CHARSET);
-            byte[] result = AESUtilP7.decrypt(keyBytes, data);
+            byte[] result = AESUtilP7.decrypt(data, keyBytes);
             return new String(result, DATA_CHARSET);
         } catch (Exception e) {
             throw new RuntimeException("解密异常",e);
         }
     }
 
-    public static byte[] decrypt(byte[] key, byte[] data) throws GeneralSecurityException {
+    public static byte[] decrypt(byte[] data, byte[] key) throws GeneralSecurityException {
         return doFinal(key, offset.getBytes(), data, Cipher.DECRYPT_MODE);
     }
 

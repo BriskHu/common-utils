@@ -23,6 +23,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Aes加密操作界面<p/>
@@ -35,6 +37,7 @@ public class AesEncryptPage {
 
     /* ---------------------------------------- fileds ---------------------------------------- */
     private String aesMode = null;
+    private static final Charset DATA_CHARSET = StandardCharsets.UTF_8;
 
     private JFrame jFrame = null;
     private final String FRAME_TITLE = "AES加密";
@@ -329,7 +332,12 @@ public class AesEncryptPage {
                     }
                 } else if (aesMode.equals(AesModeEnum.CBCPKCS7.getModeName())) {
                     AESUtilP7.setOffset(offset);
-                    encryptResult = AESUtilP7.encrypt(originText, key);
+                    if (keyEncodingMode.equals(KeyEncodingMode.PLATIN.getEncodingName())) {
+                        encryptResult = AESUtilP7.encrypt(originText, key);
+                    } else {
+                        encryptResult = new String( Base64.encodeBase64( AESUtilP7.encrypt(originText.getBytes(DATA_CHARSET),
+                                Base64.decodeBase64(key.getBytes(DATA_CHARSET))) ) );
+                    }
                 }
                 LOGGER.info("[doEncryptBtn] encryptResult = {}\n", encryptResult);
             } catch (Exception e) {

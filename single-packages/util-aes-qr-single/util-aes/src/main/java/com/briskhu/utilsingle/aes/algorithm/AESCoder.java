@@ -8,6 +8,8 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 
 /**
@@ -18,6 +20,7 @@ public abstract class AESCoder {
 	public static final String ALGORITHM = "AES";
 	// 密钥长度(java默认只能处理128位以内的长度,如果需要处理大于128位可以使用JCE解除密钥长度限制)
 	public static final int KEY_SIZE = 128;
+	private static final Charset DATA_CHARSET = StandardCharsets.UTF_8;
 
 	/**
 	 * 转换密钥
@@ -80,7 +83,7 @@ public abstract class AESCoder {
 	 */
 	public static byte[] decrypt(String base64data, String key)
 			throws Exception {
-		return decrypt(Base64.decodeBase64(base64data), getKey(key));
+		return decrypt(Base64.decodeBase64(base64data.getBytes(DATA_CHARSET)), getKey(key));
 	}
 
 	/**
@@ -129,7 +132,7 @@ public abstract class AESCoder {
 	 * @throws Exception
 	 */
 	public static byte[] encrypt(String data, String key) throws Exception {
-		return encrypt(data.getBytes(), getKey(key));
+		return encrypt(data.getBytes(DATA_CHARSET), getKey(key));
 	}
 
 	/**
@@ -171,7 +174,7 @@ public abstract class AESCoder {
 	 * @throws Exception
 	 */
 	public static byte[] getKey(String key) throws Exception {
-		return Base64.decodeBase64(key);
+		return Base64.decodeBase64(key.getBytes(DATA_CHARSET));
 	}
 
 	/**

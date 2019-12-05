@@ -109,7 +109,7 @@
                         </goals>
                         <configuration>
                             <encoding>UTF-8</encoding>
-                            <outputDirectory>../${packageRootDir}/aes</outputDirectory>
+                            <outputDirectory>../${packageConfigDir}/aes</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>src/main/resources/</directory>
