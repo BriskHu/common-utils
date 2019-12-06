@@ -13,6 +13,8 @@ import com.briskhu.utilsingle.aes.algorithm.AESUtilP7;
 import com.briskhu.utilsingle.aes.algorithm.AesUtil;
 import com.briskhu.utilsingle.aes.constant.AesModeEnum;
 import com.briskhu.utilsingle.aes.constant.KeyEncodingMode;
+import com.briskhu.utilsingle.aesqrcommon.model.AesConfigDto;
+import lombok.Data;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +34,12 @@ import java.nio.charset.StandardCharsets;
  * @author Brisk Hu
  * created on 2019-11-09
  **/
+@Data
 public class AesDecryptPage {
     private static final Logger LOGGER = LoggerFactory.getLogger(AesDecryptPage.class);
 
     /* ---------------------------------------- fileds ---------------------------------------- */
+    private AesConfigDto aesConfigDto = null;
     private String aesMode = null;
     private static final Charset DATA_CHARSET = StandardCharsets.UTF_8;
 
@@ -107,6 +111,16 @@ public class AesDecryptPage {
 
 
     /* ---------------------------------------- methods ---------------------------------------- */
+    public void setAesConfigDto(AesConfigDto aesConfigDto) {
+        this.aesConfigDto = aesConfigDto;
+        if (this.panel != null) {
+            this.aesModeCombo.setSelectedItem(aesConfigDto.getAesMode());
+            this.offsetField.setText(aesConfigDto.getOffset());
+            this.keyEncodingModeComb.setSelectedItem(aesConfigDto.getKeyMode());
+            this.keyField.setText(aesConfigDto.getKey());
+            this.panel.validate();
+        }
+    }
 
     /**
      * 生成Aes解密页面的面板
@@ -194,7 +208,7 @@ public class AesDecryptPage {
         JPanel panel = Panel.init(panelName, originAreaWidth, originAreaHeight);
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 //        panel.add(originArea);
-        JScrollPane scrollPane = TextArea.putIntoScrollbar(originArea, new Dimension(originAreaWidth-5, originAreaHeight-5));
+        JScrollPane scrollPane = TextArea.putIntoScrollbar(originArea, new Dimension(originAreaWidth - 5, originAreaHeight - 5));
         panel.add(scrollPane);
 
         return panel;
@@ -251,7 +265,7 @@ public class AesDecryptPage {
 
         JPanel panel = Panel.init(panelName, decryptAreaWidth, decryptAreaHeight);
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JScrollPane scrollPane = TextArea.putIntoScrollbar(decryptArea, new Dimension(decryptAreaWidth-5, decryptAreaHeight-5));
+        JScrollPane scrollPane = TextArea.putIntoScrollbar(decryptArea, new Dimension(decryptAreaWidth - 5, decryptAreaHeight - 5));
         panel.add(scrollPane);
 
         return panel;
@@ -262,7 +276,7 @@ public class AesDecryptPage {
         decryptArea.setText("null");
         decryptArea.validate();
         if (checkParams()) {
-            try{
+            try {
                 if (aesMode.equals(AesModeEnum.ALL_DEFAULT.getModeName())) {
                     if (keyEncodingMode.equals(KeyEncodingMode.PLATIN.getEncodingName())) {
                         decryptResult = new String(AESCoder.decrypt(Base64.decodeBase64(originText), key.getBytes()));
@@ -274,7 +288,7 @@ public class AesDecryptPage {
                     if (keyEncodingMode.equals(KeyEncodingMode.PLATIN.getEncodingName())) {
                         decryptResult = AESUtilP7.decrypt(originText, key);
                     } else {
-                        decryptResult = new String( AESUtilP7.decrypt(Base64.decodeBase64(originText.getBytes(DATA_CHARSET)),
+                        decryptResult = new String(AESUtilP7.decrypt(Base64.decodeBase64(originText.getBytes(DATA_CHARSET)),
                                 Base64.decodeBase64(key.getBytes(DATA_CHARSET))), DATA_CHARSET);
                     }
                 }
@@ -286,7 +300,7 @@ public class AesDecryptPage {
             }
 
             decryptArea.setText(decryptResult);
-            if (decryptResult == null){
+            if (decryptResult == null) {
                 JOptionPane.showMessageDialog(panel, FAILED_DECRYPT, AesGuiMain.AES_DE_PAGE_TITLE, JOptionPane.ERROR_MESSAGE);
                 decryptArea.setText(FAILED_DECRYPT);
             }

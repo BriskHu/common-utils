@@ -21,6 +21,7 @@ public class Panel {
     /* ---------------------------------------- methods ---------------------------------------- */
     /**
      * 基于绝对布局初始化面板
+     *
      * @param panelName
      * @param width
      * @param height
@@ -34,10 +35,24 @@ public class Panel {
         return result;
     }
 
+    /**
+     * 基于绝对布局初始化面板
+     *
+     * @param panelName
+     * @param size
+     * @return
+     */
+    public static JPanel init(String panelName, Dimension size) {
+        JPanel result = new JPanel();
+        result.setName(panelName);
+        result.setPreferredSize(size);
+        return result;
+    }
 
     /**
      * 基于流布局初始化面板
      * 默认为左对齐方式
+     *
      * @param panelName
      * @param width
      * @param height
@@ -53,10 +68,11 @@ public class Panel {
 
     /**
      * 基于流布局初始化面板并添加Box对象
+     *
      * @param panelName
      * @param width
      * @param height
-     * @param box Box对象
+     * @param box       Box对象
      * @return
      */
     public static JPanel initForBox(String panelName, int width, int height, Box box) {
@@ -68,11 +84,12 @@ public class Panel {
 
     /**
      * 将组件添加到面板中
+     *
      * @param panel
      * @param components
      */
-    public static void add(JPanel panel, JComponent... components){
-        for (int i=0; i<components.length; i++){
+    public static void add(JPanel panel, JComponent... components) {
+        for (int i = 0; i < components.length; i++) {
             panel.add(components[i]);
         }
     }
@@ -80,6 +97,7 @@ public class Panel {
 
     /**
      * 重新加载面板内的元素
+     *
      * @param rootPanel
      * @param childrens
      */
@@ -89,7 +107,6 @@ public class Panel {
             rootPanel.add(childrens[i]);
         }
     }
-
 
 
 }

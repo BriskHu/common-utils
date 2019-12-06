@@ -13,6 +13,8 @@ import com.briskhu.utilsingle.aes.algorithm.AESUtilP7;
 import com.briskhu.utilsingle.aes.algorithm.AesUtil;
 import com.briskhu.utilsingle.aes.constant.AesModeEnum;
 import com.briskhu.utilsingle.aes.constant.KeyEncodingMode;
+import com.briskhu.utilsingle.aesqrcommon.model.AesConfigDto;
+import lombok.Data;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +34,12 @@ import java.nio.charset.StandardCharsets;
  * @author Brisk Hu
  * created on 2019-11-09
  **/
+@Data
 public class AesEncryptPage {
     private static final Logger LOGGER = LoggerFactory.getLogger(AesEncryptPage.class);
 
     /* ---------------------------------------- fileds ---------------------------------------- */
+    private AesConfigDto aesConfigDto = null;
     private String aesMode = null;
     private static final Charset DATA_CHARSET = StandardCharsets.UTF_8;
 
@@ -117,6 +121,16 @@ public class AesEncryptPage {
 
 
     /* ---------------------------------------- methods ---------------------------------------- */
+    public void setAesConfigDto(AesConfigDto aesConfigDto) {
+        this.aesConfigDto = aesConfigDto;
+        if (this.panel != null) {
+            this.aesModeCombo.setSelectedItem(aesConfigDto.getAesMode());
+            this.offsetField.setText(aesConfigDto.getOffset());
+            this.keyEncodingModeComb.setSelectedItem(aesConfigDto.getKeyMode());
+            this.keyField.setText(aesConfigDto.getKey());
+            this.panel.validate();
+        }
+    }
 
     /**
      * 生成Aes加密页面的面板
@@ -335,8 +349,8 @@ public class AesEncryptPage {
                     if (keyEncodingMode.equals(KeyEncodingMode.PLATIN.getEncodingName())) {
                         encryptResult = AESUtilP7.encrypt(originText, key);
                     } else {
-                        encryptResult = new String( Base64.encodeBase64( AESUtilP7.encrypt(originText.getBytes(DATA_CHARSET),
-                                Base64.decodeBase64(key.getBytes(DATA_CHARSET))) ) );
+                        encryptResult = new String(Base64.encodeBase64(AESUtilP7.encrypt(originText.getBytes(DATA_CHARSET),
+                                Base64.decodeBase64(key.getBytes(DATA_CHARSET)))));
                     }
                 }
                 LOGGER.info("[doEncryptBtn] encryptResult = {}\n", encryptResult);
