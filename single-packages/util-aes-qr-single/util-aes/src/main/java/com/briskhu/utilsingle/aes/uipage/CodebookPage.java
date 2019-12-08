@@ -1,6 +1,7 @@
 package com.briskhu.utilsingle.aes.uipage;
 
 
+import com.briskhu.common.jgui.algorithm.Geometry;
 import com.briskhu.common.jgui.operation.ComboBox;
 import com.briskhu.common.jgui.operation.Label;
 import com.briskhu.common.jgui.operation.Panel;
@@ -160,21 +161,24 @@ public class CodebookPage {
     }
 
     /**
-     *
      * @param aesConfigDtoList
      * @return
      */
-    public JPanel createCodebookNormalPanel(List<AesConfigDto> aesConfigDtoList){
+    public JPanel createCodebookNormalPanel(List<AesConfigDto> aesConfigDtoList) {
         codebookPanel = new JPanel();
-        Box box = Box.createVerticalBox();
+
         addAesConfigBtn = Button.init("addAesConfigBtn", ADD_AES_CONFIG_HINT, FSIZE_NORMAL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LOGGER.info("[actionPerformed] ");
+                LOGGER.info("[addAesConfigBtn-actionPerformed] ");
             }
         });
-        box.add(addAesConfigBtn);
-        box.add(Box.createVerticalStrut(elementGap*2));
+        addAesConfigBtn.setSize(new Dimension(200, 40));
+        addAesConfigBtn.setLocation((int) Geometry.getPanelCenter(codebookPanel).getWidth(), (int) Geometry.getPanelCenter(codebookPanel).getHeight());
+
+        Box box = Box.createVerticalBox();
+        codebookPanel.add(addAesConfigBtn);
+        box.add(Box.createVerticalStrut(elementGap * 2));
         box.add(createConfigListPanel(aesConfigDtoList));
         codebookPanel.add(box);
 
@@ -183,6 +187,7 @@ public class CodebookPage {
 
     /**
      * 创建Aes配置列表面板
+     *
      * @param aesConfigDtoList
      * @return
      */

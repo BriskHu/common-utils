@@ -50,29 +50,16 @@ public class CodebookPageTest {
 
 
     public static void createConfigListPanel() {
-        List<AesConfigDto> aesConfigDtoList = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            AesConfigDto aesConfigDto = new AesConfigDto();
-            aesConfigDto.setId("" + i);
-            aesConfigDto.setConfigName("test" + i);
-            aesConfigDto.setAesMode(AesModeEnum.CBCPKCS7.getModeName());
-            aesConfigDto.setOffset("012345678912345" + i);
-            aesConfigDto.setKeyMode(KeyEncodingMode.PLATIN.getEncodingName());
-            aesConfigDto.setKey("0123456789ABCDE" + i);
-            aesConfigDtoList.add(aesConfigDto);
-        }
-
         CodebookPage codebookPage = new CodebookPage();
 
         JFrame frame = new JFrame();
         frame.setSize(new Dimension(800, 900));
         frame.setLocationRelativeTo(null);
-        frame.setContentPane(codebookPage.createConfigListPanel(aesConfigDtoList));
+        frame.setContentPane(codebookPage.createConfigListPanel(initAesConfigDto()));
         frame.setVisible(true);
     }
 
-
-    public static void createCodebookNormalPanel() {
+    private static List<AesConfigDto> initAesConfigDto(){
         List<AesConfigDto> aesConfigDtoList = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
             AesConfigDto aesConfigDto = new AesConfigDto();
@@ -84,13 +71,16 @@ public class CodebookPageTest {
             aesConfigDto.setKey("0123456789ABCDE" + i);
             aesConfigDtoList.add(aesConfigDto);
         }
+        return aesConfigDtoList;
+    }
 
+    public static void createCodebookNormalPanel() {
         CodebookPage codebookPage = new CodebookPage();
 
         JFrame frame = new JFrame();
         frame.setSize(new Dimension(800, 900));
         frame.setLocationRelativeTo(null);
-        frame.setContentPane(codebookPage.createCodebookNormalPanel(aesConfigDtoList));
+        frame.setContentPane(codebookPage.createCodebookNormalPanel(initAesConfigDto()));
         frame.setVisible(true);
     }
 

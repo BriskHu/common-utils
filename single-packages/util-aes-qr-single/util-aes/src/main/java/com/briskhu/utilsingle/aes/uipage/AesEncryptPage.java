@@ -27,6 +27,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
 
 /**
  * Aes加密操作界面<p/>
@@ -113,6 +116,11 @@ public class AesEncryptPage {
     private JButton getTimestampBtn = null;
     private String GET_TIMISTAMP_HINT = "获取时间戳";
     private JTextField timestampField = null;
+    private JButton getDateBtn = null;
+    private String GET_DATE_HINT = "转换为日期";
+    private String TIME_FORMAT_ERROR = "时间戳格式错误";
+    private String TIME_LENGTH_ERROR = "时间戳长度错误";
+    private JLabel dateLabel = null;
     private long nowTimestamp = 0;
 
     private JPanel authorPanel = null;
@@ -170,7 +178,7 @@ public class AesEncryptPage {
         row6Panel.setSize(encryptAreaWidth, encryptAreaHeight);
 
         row7Panel.setLocation(10, textBarHeight * 2 + originAreaHeight * 2 + panelGap * 5);
-        row7Panel.setSize(encryptAreaWidth, textBarHeight);
+        row7Panel.setSize(frameWidth, textBarHeight);
 
         authorPanel.setSize(textBarWidth, textBarHeight);
         authorPanel.setLocation(10, frameHeight - 20);
@@ -295,7 +303,7 @@ public class AesEncryptPage {
         getTimestampBtn = Button.init("getTimestampBtn", GET_TIMISTAMP_HINT, FSIZE_NORMAL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LOGGER.debug("[actionPerformed] Button {} has been pressed", getTimestampBtn.getName());
+                LOGGER.debug("[getTimestampBtn-actionPerformed] Button {} has been pressed", getTimestampBtn.getName());
                 doGetTimeBtn();
             }
         });
@@ -303,13 +311,50 @@ public class AesEncryptPage {
         nowTimestamp = System.currentTimeMillis();
         timestampField = TextField.init("timestampField", 10, FSIZE_NORMAL, nowTimestamp + "");
         timestampField.setPreferredSize(new Dimension(150, 35));
+        dateLabel = Label.init("", "dateLabel", FSIZE_NORMAL);
+        dateLabel.setPreferredSize(new Dimension(260, 35));
+        dateLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        getDateBtn = Button.init("getDateBtn", GET_DATE_HINT, FSIZE_NORMAL, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (timestampField.getText() != null) {
+                    String timeFieldStr = timestampField.getText();
+                    LOGGER.debug("[getDateBtn-actionPerformed] timeFieldStr = {}", timeFieldStr);
+                    if (!timeFieldStr.matches("^\\d+$")) {
+                        LOGGER.error("[getDateBtn-actionPerformed] 时间戳格式错误");
+                        JOptionPane.showMessageDialog(panel, TIME_FORMAT_ERROR, AesGuiMain.AES_EN_PAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    Date date = null;
+                    if (timeFieldStr.length() == 13) {
+                        date = Date.from(Instant.ofEpochMilli(Long.parseLong(timeFieldStr)));
+                    } else if (timeFieldStr.length() == 10) {
+                        date = Date.from(Instant.ofEpochSecond(Long.parseLong(timeFieldStr)));
+                    } else {
+                        LOGGER.error("[getDateBtn-actionPerformed] 时间戳长度错误");
+                        JOptionPane.showMessageDialog(panel, TIME_LENGTH_ERROR, AesGuiMain.AES_EN_PAGE_TITLE, JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
+                    dateLabel.setText(simpleDateFormat.format(date));
+                }
+
+            }
+        });
+        getDateBtn.setPreferredSize(new Dimension(135, 35));
 
         Box box = Box.createHorizontalBox();
         box.add(getTimestampBtn);
         box.add(Box.createHorizontalStrut(elementGap));
         box.add(timestampField);
+        box.add(Box.createHorizontalStrut(elementGap));
+        box.add(getDateBtn);
+        box.add(Box.createHorizontalStrut(elementGap));
+        box.add(dateLabel);
 
-        return Panel.initForBox(panelName, 180, 10, box);
+        return Panel.initForBox(panelName, 780, 10, box);
     }
 
     private JPanel createAuthorPanel(String panelName) {
