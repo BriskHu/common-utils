@@ -1,6 +1,7 @@
 package com.briskhu.util.db.admin.serverimpl.service;
 
 import com.alibaba.fastjson.JSON;
+import com.briskhu.util.db.admin.serverimpl.dto.CreateTableSentenceDto;
 import com.briskhu.util.db.admin.serverimpl.mapper.DatabaseMapper;
 import com.briskhu.util.web.result.BasicResult;
 import org.slf4j.Logger;
@@ -8,8 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,6 +32,7 @@ public class DatabaseService {
 
 
     /* ---------------------------------------- methods ---------------------------------------- */
+
     /**
      * 获取所有的数据库名称
      *
@@ -63,6 +67,17 @@ public class DatabaseService {
         String dbListStr = JSON.toJSONString(dbList);
         ResponseEntity<String> result = new ResponseEntity<String>(dbListStr, HttpStatus.OK);
         return result;
+    }
+
+    /**
+     * 获取当前操作所在的数据库
+     *
+     * @return
+     */
+    public BasicResult getCurrentDb() {
+        LOGGER.info("[getCurrentDb] start...");
+        String currentDb = databaseMapper.getCurrentDb();
+        return BasicResult.ok().addData(currentDb);
     }
 
     /**
@@ -122,6 +137,64 @@ public class DatabaseService {
         return BasicResult.ok().addData(fieldsList);
     }
 
+    /**
+     * 展示指定数据库指定表的建表语句
+     *
+     * @param tableName
+     * @return
+     */
+    public BasicResult showCreateTableForOne(String dbName, String tableName) {
+        LOGGER.info("[showCreateTableForOne] start...");
+
+        if (dbName == null) {
+            databaseMapper.useDatabase(databaseMapper.getCurrentDb());
+        } else {
+            tableName = dbName + "." + tableName;
+        }
+
+        CreateTableSentenceDto createTableSentenceDto = null;
+        try {
+            createTableSentenceDto = databaseMapper.showCreateTableForOne(tableName);
+        } catch (BadSqlGrammarException be) {
+            LOGGER.error("[showCreateTableForOne] BadSqlGrammarException: errMsg = {}.", be.getCause().getMessage());
+            return BasicResult.fail(be.getCause().getMessage());
+        }
+
+        return BasicResult.ok().addData(createTableSentenceDto);
+    }
+
+    /**
+     * 展示指定数据库中全部表的建表语句
+     * @param dbName
+     * @return
+     */
+    public BasicResult showCreateTableForAll(String dbName){
+        LOGGER.info("[showCreateTableForAll] start...");
+        BasicResult result = null;
+
+        try{
+            databaseMapper.useDatabase(dbName);
+            List<String> tableList = databaseMapper.showTables();
+            LOGGER.debug("[showCreateTableForAll] tableList.size = {}.", tableList.size());
+            if (tableList.size()>0){
+                List<CreateTableSentenceDto> createTableSentenceList = new ArrayList<>();
+                for (String tableName : tableList){
+                    createTableSentenceList.add(databaseMapper.showCreateTableForOne(tableName));
+                }
+
+                LOGGER.info("[showCreateTableForAll] successful end.");
+                result = BasicResult.ok().addData(createTableSentenceList);
+            }else {
+                LOGGER.info("[showCreateTableForAll] successful end.");
+                result = BasicResult.ok("该数据库中不存在数据表。");
+            }
+        } catch (BadSqlGrammarException bsge){
+            LOGGER.error("[showCreateTableForOne] BadSqlGrammarException: errMsg = {}.", bsge.getCause().getMessage());
+            result = BasicResult.fail(bsge.getCause().getMessage());
+        }
+
+        return result;
+    }
 
 }
 

@@ -12,11 +12,16 @@
 var jQuery='../js/jquery-3.4.1.min.js';
 var layui='../layui/layui.js';
 var layuiAll='../layui/layui.all.js';
+var selectM = "../js/layui_extends/selectM.js";
+var selectN = "../js/layui_extends/selectN.js";
+
 var contextPath='http://127.0.0.1:9918/dbadmin';
 var utf8='utf-8';
 
 includeJs(jQuery);
 includeJs(layuiAll, utf8);
+// includeJs(selectM);
+// includeJs(selectN);
 
 
 /**

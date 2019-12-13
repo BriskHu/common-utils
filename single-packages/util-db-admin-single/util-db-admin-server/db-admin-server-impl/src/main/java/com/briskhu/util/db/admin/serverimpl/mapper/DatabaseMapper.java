@@ -1,8 +1,8 @@
 package com.briskhu.util.db.admin.serverimpl.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import com.briskhu.util.db.admin.serverimpl.dto.CreateTableSentenceDto;
+import org.apache.ibatis.annotations.*;
+import org.springframework.jdbc.BadSqlGrammarException;
 
 import java.util.List;
 import java.util.Map;
@@ -31,13 +31,20 @@ public interface DatabaseMapper {
     List<String> showDatabases();
 
     /**
+     * 获取当前操作所在的数据库
+     * @return
+     */
+    @Select("SELECT database()")
+    String getCurrentDb();
+
+    /**
      * 选择数据库
      *
      * @param dbName
      * @return
      */
     @Select("USE ${dbName}")
-    String useDatabase(@Param("dbName") String dbName);
+    String useDatabase(@Param("dbName") String dbName) throws BadSqlGrammarException;
 
     /**
      * 执行 show tables
@@ -55,6 +62,15 @@ public interface DatabaseMapper {
     @Select("SELECT COLUMN_NAME as columnName FROM information_schema.COLUMNS where TABLE_SCHEMA=#{dbName} and TABLE_NAME=#{tableName}")
     List<String> showFields(@Param("dbName") String dbName, @Param("tableName") String tableName);
 
+    /**
+     * 获取指定数据库指定表的建表语句
+     * @param tableName
+     * @return
+     */
+    @Select("SHOW CREATE TABLE ${tableName}")
+    @Results(id = "resCreateTable",
+            value = {@Result(column = "Table", property = "tableName"), @Result(column = "Create Table", property = "tableDesc")})
+    CreateTableSentenceDto showCreateTableForOne(String tableName) throws BadSqlGrammarException;
 
 
 

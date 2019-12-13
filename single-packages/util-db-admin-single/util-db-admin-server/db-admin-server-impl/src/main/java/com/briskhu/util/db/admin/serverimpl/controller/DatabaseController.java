@@ -48,7 +48,7 @@ public class DatabaseController {
      */
     @GetMapping("/getTableColumns")
     public ResponseEntity<String> getTableColumns(@RequestParam(value = "tableName", required = true) String tableName) {
-        LOGGER.info("[getTableColumns] 入参：tableName = {}", tableName);
+        LOGGER.info("[getTableColumns] 入参：tableName = {}.", tableName);
 
         return databaseService.getTableColumns(tableName);
     }
@@ -64,13 +64,24 @@ public class DatabaseController {
     }
 
     /**
+     * 获取当前操作所在的数据库
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/getCurrentDb")
+    public BasicResult getCurrentDb(){
+        LOGGER.info("[getCurrentDb] start...");
+        return databaseService.getCurrentDb();
+    }
+
+    /**
      * 选择数据库
      * @param dbName
      * @return
      */
     @GetMapping("/useDatabase/{dbName}")
     public ResponseEntity<String> useDatabase(@PathVariable("dbName") String dbName){
-        LOGGER.info("[useDatabase] 入参：dbName = {}", dbName);
+        LOGGER.info("[useDatabase] 入参：dbName = {}.", dbName);
         return databaseService.useDatabase(dbName);
     }
 
@@ -96,7 +107,7 @@ public class DatabaseController {
     @GetMapping("/showFields")
     public ResponseEntity<String> showFields(@RequestParam(name = "dbName", required = true)String dbName,
                                              @RequestParam(name = "tableName", required = true) String tableName) {
-        LOGGER.info("[showFields] 入参：dbName = {}, tableName = {}", dbName, tableName);
+        LOGGER.info("[showFields] 入参：dbName = {}, tableName = {}.", dbName, tableName);
         return databaseService.showFields(dbName, tableName);
     }
 
@@ -111,10 +122,47 @@ public class DatabaseController {
     @GetMapping("/showFieldsByResult")
     public BasicResult showFieldsByResult(@RequestParam(name = "dbName", required = true)String dbName,
                                           @RequestParam(name = "tableName", required = true) String tableName) {
-        LOGGER.info("[showFields] 入参：dbName = {}, tableName = {}", dbName, tableName);
+        LOGGER.info("[showFields] 入参：dbName = {}, tableName = {}.", dbName, tableName);
         return databaseService.showFieldsByResult(dbName, tableName);
     }
 
+    /**
+     * 展示指定表的建表语句
+     * 使用的数据库是当前数据库
+     * @param tableName
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/showCreateTableForOne/{tableName}")
+    public BasicResult showCreateTableForOne(@PathVariable(name = "tableName", required = true)String tableName){
+        LOGGER.info("[showCreateTableForOne] 入参：tableName = {}.", tableName);
+        return databaseService.showCreateTableForOne(null, tableName);
+    }
+
+    /**
+     * 展示指定数据库指定表的建表语句
+     * @param tableName
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/showCreateTableForOne")
+    public BasicResult showCreateTableForOne(@RequestParam(name = "dbName", required = true)String dbName,
+                                             @RequestParam(name = "tableName", required = true) String tableName){
+        LOGGER.info("[showCreateTableForOne] 入参：dbName = {}, tableName = {}.", dbName, tableName);
+        return databaseService.showCreateTableForOne(dbName, tableName);
+    }
+
+    /**
+     * 展示指定数据库中全部表的建表语句
+     * @param dbName
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/showCreateTableForAll/{dbName}")
+    public BasicResult showCreateTableForAll(@PathVariable(name = "dbName", required = true)String dbName) {
+        LOGGER.info("[showCreateTableForOne] 入参：dbName = {}.", dbName);
+        return databaseService.showCreateTableForAll(dbName);
+    }
 
 
 }
