@@ -11,13 +11,13 @@ import lombok.Data;
  **/
 @Data
 public class AbsReturnCode {
-    String code;
+    int code;
     String msg;
 
     public AbsReturnCode(){
     }
 
-    public AbsReturnCode(String code, String msg) {
+    public AbsReturnCode(int code, String msg) {
         this.code = code;
         this.msg = msg;
     }

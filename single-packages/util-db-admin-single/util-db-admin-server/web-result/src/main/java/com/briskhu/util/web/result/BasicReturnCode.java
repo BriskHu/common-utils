@@ -11,8 +11,8 @@ import lombok.Data;
 @Data
 public class BasicReturnCode extends AbsReturnCode {
 
-    public static AbsReturnCode SUCCESS = new AbsReturnCode("000000", "请求成功");
-    public static AbsReturnCode FAIL = new AbsReturnCode("999999", "请求失败");
+    public static AbsReturnCode SUCCESS = new AbsReturnCode(0, "请求成功");
+    public static AbsReturnCode FAIL = new AbsReturnCode(999999, "请求失败");
 
 
 }

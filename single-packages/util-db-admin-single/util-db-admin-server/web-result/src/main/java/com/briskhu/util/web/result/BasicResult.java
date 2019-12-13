@@ -14,7 +14,7 @@ import lombok.Data;
 public class BasicResult<T> {
 
     /* ---------------------------------------- fileds ---------------------------------------- */
-    private String code;
+    private int code;
     private String msg;
     private T data;
     private boolean success;
@@ -24,7 +24,7 @@ public class BasicResult<T> {
     public BasicResult() {
     }
 
-    public BasicResult(String code, String message) {
+    public BasicResult(int code, String message) {
         this.code = code;
         this.msg = message;
     }
