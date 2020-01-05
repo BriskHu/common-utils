@@ -67,6 +67,17 @@ public class Geometry {
     }
 
     /**
+     * 将target组件放在container组件的水平居中位置
+     * @param container
+     * @param target
+     */
+    public static void putInHorizontalCenter(JComponent container, JComponent target, double height){
+        int x = container.getX() + (container.getWidth() - target.getWidth()) / 2;
+
+        target.setLocation(new Point(x, (int) height));
+    }
+
+    /**
      * 获取将target组件放置在container组件中心时的坐标数据
      * <b>注意：这个方法需要获取父组件的坐标，因此可能导致空指针异常。使用时要确保父组件已经被渲染。</b>
      * @param container

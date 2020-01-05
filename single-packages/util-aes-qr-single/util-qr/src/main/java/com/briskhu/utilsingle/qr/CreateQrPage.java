@@ -6,7 +6,6 @@ import com.briskhu.common.jgui.operation.Frame;
 import com.briskhu.common.jgui.operation.Label;
 import com.briskhu.common.jgui.operation.Panel;
 import com.briskhu.common.jgui.operation.TextField;
-import com.briskhu.common.jgui.other.GuiDebugTools;
 import com.briskhu.common.jgui.other.OsTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,23 +37,8 @@ public class CreateQrPage {
 
     static {
         OsTools.printOsInfo();
-        DEFAULT_PATH = OsTools.initDefaultDir();
-        File defaultDir = new File(DEFAULT_PATH);
-        if (defaultDir.exists()) {
-            directory = DEFAULT_PATH;
-        } else {
-            int tryTimes = 0;
-            while (!defaultDir.mkdir() && tryTimes < 3) {
-                defaultDir.mkdir();
-                tryTimes++;
-            }
-            if (tryTimes == 3) {
-                LOGGER.error("[static code] 3次创建默认文件夹均失败，退出程序");
-                System.exit(-1);
-            } else {
-                directory = DEFAULT_PATH;
-            }
-        }
+        DEFAULT_PATH = OsTools.getDefaultDir("QrImages");
+        directory = OsTools.createDir(DEFAULT_PATH);
     }
 
     private JFrame jFrame = null;
@@ -107,6 +91,7 @@ public class CreateQrPage {
      * 基于Box布局的页面
      */
     public void createQrPageByBox() {
+        LOGGER.info("[createQrPageByBox] start...");
         jFrame = Frame.init(framTitle, frameWidth, frameHeight);
         jFrame.setUndecorated(true);
         jFrame.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
@@ -143,6 +128,7 @@ public class CreateQrPage {
      * @return
      */
     public JPanel createQrPagePanel() {
+        LOGGER.info("[createQrPagePanel] start...");
         JPanel resultPanel = new JPanel(null);
 //        resultPanel = new JPanel();
 //        resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.PAGE_AXIS));

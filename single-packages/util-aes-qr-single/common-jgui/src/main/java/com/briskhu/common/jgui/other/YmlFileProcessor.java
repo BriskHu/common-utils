@@ -42,9 +42,10 @@ public class YmlFileProcessor {
      * @param ymlModelClass
      * @return
      */
-    public static Object ymlToBean(FileInputStream ymlFileName, Class ymlModelClass) {
-        Yaml ymlLoader = new Yaml();
-        Object result = ymlLoader.loadAs(ymlFileName, ymlModelClass);
+    public static <T> T ymlToBean(FileInputStream ymlFileName, Class<T> ymlModelClass) {
+//        Yaml ymlLoader = new Yaml();
+        Yaml ymlLoader = getFieldsOrderKeptYaml();
+        T result = ymlLoader.loadAs(ymlFileName, ymlModelClass);
         LOGGER.debug("[ymlToBean] result = {}", result);
 
         return result;
@@ -57,16 +58,17 @@ public class YmlFileProcessor {
      * @param ymlModelClass
      * @return
      */
-    public static Object itemToBean(String ymlFileName, Class ymlModelClass) {
+    public static <T> T itemToBean(String ymlFileName, Class<T> ymlModelClass) {
         Yaml ymlLoader = new Yaml();
-        Object result = ymlLoader.loadAs(ymlFileName, ymlModelClass);
-        LOGGER.debug("[ymlToBean] result = {}", result);
+        T result = ymlLoader.loadAs(ymlFileName, ymlModelClass);
+        LOGGER.debug("[itemToBean] result = {}", result);
 
         return result;
     }
 
 
     /* -------------------- preprocess -------------------- */
+
     /**
      * 获取一个不改变类字段定义顺序的Yaml处理类
      *
@@ -104,7 +106,11 @@ public class YmlFileProcessor {
         boolean result = false;
         FileWriter ymlFile = null;
         try {
-            ymlFile = new FileWriter(filename);
+            File file = new File(filename);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            ymlFile = new FileWriter(file);
             Yaml ymlProcessor = getFieldsOrderKeptYaml();
             ymlProcessor.dump(ymlBean, ymlFile);
             result = true;

@@ -2,34 +2,27 @@ package com.briskhu.utilsingle.aes.uipage;
 
 
 import com.briskhu.common.jgui.algorithm.Geometry;
-import com.briskhu.common.jgui.operation.ComboBox;
 import com.briskhu.common.jgui.operation.Label;
 import com.briskhu.common.jgui.operation.Panel;
+import com.briskhu.common.jgui.operation.TextField;
 import com.briskhu.common.jgui.other.GuiDebugTools;
+import com.briskhu.common.jgui.other.OsTools;
 import com.briskhu.common.jgui.other.YmlFileProcessor;
 import com.briskhu.utilsingle.aes.AesGuiMain;
-import com.briskhu.utilsingle.aes.algorithm.AESCoder;
-import com.briskhu.utilsingle.aes.algorithm.AESUtilP7;
-import com.briskhu.utilsingle.aes.algorithm.AesUtil;
-import com.briskhu.utilsingle.aes.constant.AesModeEnum;
-import com.briskhu.utilsingle.aes.constant.KeyEncodingMode;
 import com.briskhu.utilsingle.aesqrcommon.model.AesConfigDto;
 import com.briskhu.utilsingle.aesqrcommon.model.ApplicationConfigModel;
-import javafx.scene.layout.Pane;
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.briskhu.common.jgui.operation.TextArea;
-import com.briskhu.common.jgui.operation.TextField;
 import com.briskhu.common.jgui.operation.Button;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 /**
  * Aes密码本操作界面<p/>
@@ -41,6 +34,15 @@ public class CodebookPage {
     private static final Logger LOGGER = LoggerFactory.getLogger(CodebookPage.class);
 
     private String aesMode = null;
+    private static String APP_CONFIG_PATH = "conf/";
+    private static String APP_CONFIG_FILE = "application.yml";
+    private static String ERR_APP_CONFIG_HINT = "密码本配置文件异常，请重新删除当前配置后重新创建";
+    private static String AES_CONFIG_FILE = "aes/aes-params-list.yml";
+
+    static {
+        APP_CONFIG_PATH = OsTools.getDefaultDir(APP_CONFIG_PATH);
+        APP_CONFIG_PATH = OsTools.createDir(APP_CONFIG_PATH);
+    }
 
     private JFrame jFrame = null;
     private final String FRAME_TITLE = "AES密码本";
@@ -58,6 +60,7 @@ public class CodebookPage {
      */
     private final int FSIZE_NORMAL = 20;
 
+    // 创建空白密码本需要的元素
     private JLabel blankCodebookLabel = null;
     private String NO_CODEBOOK_HINT = "尚未创建你的专属密码本";
     private JButton createCodebookBtn = null;
@@ -68,6 +71,13 @@ public class CodebookPage {
     private String codebookPassword = null;
     private String confFilename = null;
 
+    // 登录密码本需要的元素
+    private JLabel loginCodebookLabel = null;
+    private String LOGIN_CODEBOOK_HINT = "登录密码本";
+    private JTextField loginCodebookField = null;
+    private String CODEBOOK_PWD_HINT = "请输入密码本的访问密码";
+    private JButton loginCodebookBtn = null;
+    private String PWD_CONFIRM_HINT = "确认";
 
     private JPanel row1Panel = null;
     /**
@@ -116,36 +126,113 @@ public class CodebookPage {
     /* ---------------------------------------- methods ---------------------------------------- */
 
     /**
+     * 创建密码本界面
+     *
+     * @return
+     */
+    public JPanel createCodebookPage() {
+        LOGGER.info("[createCodebookPage] start...");
+        confFilename = APP_CONFIG_PATH + APP_CONFIG_FILE;
+        LOGGER.info("[createCodebookPage] confFilename = {}", confFilename);
+        File appConfigFile = new File(confFilename);
+        if (!appConfigFile.exists()) {
+            return createBlankCodebookPage();
+        } else {
+            try {
+                FileInputStream fileInputStream = new FileInputStream(appConfigFile);
+                ApplicationConfigModel appConfigModel = YmlFileProcessor.ymlToBean(fileInputStream, ApplicationConfigModel.class);
+                if (appConfigModel == null || appConfigModel.getPassword() == null) {
+                    JOptionPane.showMessageDialog(null, ERR_APP_CONFIG_HINT, FRAME_TITLE, JOptionPane.ERROR_MESSAGE);
+                    return createBlankCodebookPage();
+                }
+                codebookPassword = appConfigModel.getPassword();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
+
+//            else if (appConfigModel.getPassword())
+        }
+        return null;
+    }
+
+    /**
      * 创建空白密码本界面
      *
      * @return
      */
     public JPanel createBlankCodebookPage() {
+        GuiDebugTools.setPrintBorderToggle(true);
+        LOGGER.info("[createBlankCodebookPage] start...");
         codebookPanel = new JPanel();
-        BorderLayout layout = new BorderLayout();
-        codebookPanel.setLayout(layout);
-
 
         blankCodebookLabel = Label.init(NO_CODEBOOK_HINT, "blankCodebookLabel", FSIZE_NORMAL);
+        codebookPanel.add(blankCodebookLabel);
+        Geometry.putInHorizontalCenter(codebookPanel, blankCodebookLabel, 80);
+
         createCodebookBtn = Button.init("createCodebookBtn", CREATE_CODEBOOK, FSIZE_NORMAL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 codebookPassword = JOptionPane.showInputDialog(codebookPanel, ADD_CODEBOOK_PWD, FRAME_TITLE, JOptionPane.PLAIN_MESSAGE);
-                confFilename = System.getProperty("user.dir") + "/conf/aes-qr/application.yml";
+                confFilename = APP_CONFIG_PATH + APP_CONFIG_FILE;
                 createCodebookConfigFile(confFilename, codebookPassword);
+                createCodebookPage();
             }
         });
+        createCodebookBtn.setPreferredSize(new Dimension(160, 40));
+        codebookPanel.add(createCodebookBtn);
+        Geometry.putInHorizontalCenter(codebookPanel, createCodebookBtn, 160);
 
-        Box box = Box.createHorizontalBox();
-        box.add(blankCodebookLabel);
-        box.add(Box.createHorizontalStrut(elementGap * 2));
-        box.add(createCodebookBtn);
-        box.setPreferredSize(new Dimension(300, textBarHeight));
-
-        codebookPanel.add(box, BorderLayout.NORTH);
+        GuiDebugTools.printBorderByToggle(Color.RED, blankCodebookLabel, createCodebookBtn);
 
         return codebookPanel;
     }
+
+    /**
+     * 创建登录密码本的界面
+     * @return
+     */
+    public JPanel createLoginCodebookPage(){
+        LOGGER.info("[createLoginCodebookPage] start...");
+        codebookPanel = new JPanel();
+
+        loginCodebookLabel = Label.init(LOGIN_CODEBOOK_HINT, "loginCodebookLabel", FSIZE_NORMAL);
+        loginCodebookField = TextField.init("loginCodebookField", 10, FSIZE_NORMAL, CODEBOOK_PWD_HINT);
+
+        loginCodebookBtn = Button.init("loginCodebookBtn", PWD_CONFIRM_HINT, FSIZE_NORMAL, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LOGGER.debug("[loginCodebookBtn-actionPerformed] ");
+                codebookPassword = loginCodebookField.getText();
+                if (codebookPassword.length()==0 || codebookPassword.equals(CODEBOOK_PWD_HINT)){
+                    JOptionPane.showMessageDialog(codebookPanel, "请输入访问密码", FRAME_TITLE, JOptionPane.ERROR_MESSAGE);
+                    loginCodebookField.setText(CODEBOOK_PWD_HINT);
+                    codebookPanel.validate();
+                }else {
+                    codebookPassword = loginCodebookField.getText();
+                }
+            }
+        });
+        loginCodebookBtn.setSize(new Dimension(200, 40));
+
+        loginCodebookLabel.setLocation((int) Geometry.getPanelCenter(codebookPanel).getWidth(), (int) Geometry.getPanelCenter(codebookPanel).getHeight());
+
+        Box verticalBox = Box.createVerticalBox();
+        codebookPanel.add(loginCodebookLabel);
+        verticalBox.add(Box.createVerticalStrut(elementGap * 2));
+
+        Box horizontalBox = Box.createHorizontalBox();
+        horizontalBox.add(loginCodebookField);
+        horizontalBox.add(Box.createHorizontalStrut(elementGap));
+        horizontalBox.add(loginCodebookBtn);
+
+        verticalBox.add(horizontalBox);
+        codebookPanel.add(verticalBox);
+
+        return codebookPanel;
+    }
+
 
     /**
      * 创建密码本配置文件
@@ -154,6 +241,7 @@ public class CodebookPage {
      * @param codebookPassword
      */
     private void createCodebookConfigFile(String confFilename, String codebookPassword) {
+        LOGGER.info("[createCodebookConfigFile] start: confFilename = {}, codebookPassword = {}.", confFilename, codebookPassword);
         ApplicationConfigModel applicationConfigModel = new ApplicationConfigModel();
         applicationConfigModel.setPassword(codebookPassword);
 
@@ -165,6 +253,7 @@ public class CodebookPage {
      * @return
      */
     public JPanel createCodebookNormalPanel(List<AesConfigDto> aesConfigDtoList) {
+        LOGGER.info("[createCodebookNormalPanel] start...");
         codebookPanel = new JPanel();
 
         addAesConfigBtn = Button.init("addAesConfigBtn", ADD_AES_CONFIG_HINT, FSIZE_NORMAL, new ActionListener() {
@@ -192,6 +281,7 @@ public class CodebookPage {
      * @return
      */
     public JPanel createConfigListPanel(List<AesConfigDto> aesConfigDtoList) {
+        LOGGER.info("[createConfigListPanel] start...");
         JPanel result = new JPanel();
 
         Box box = Box.createVerticalBox();

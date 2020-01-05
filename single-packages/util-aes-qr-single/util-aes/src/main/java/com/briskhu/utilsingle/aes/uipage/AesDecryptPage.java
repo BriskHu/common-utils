@@ -128,6 +128,7 @@ public class AesDecryptPage {
      * @return
      */
     public JPanel createAesDecryptPagePanel() {
+        LOGGER.info("[createAesDecryptPagePanel] start...");
         panel = new JPanel(null);
 
         row1Panel = createRow1Panel("row1Panel");

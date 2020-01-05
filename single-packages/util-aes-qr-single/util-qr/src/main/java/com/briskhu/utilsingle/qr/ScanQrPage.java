@@ -34,22 +34,8 @@ public class ScanQrPage {
     private static String DEFAULT_PATH;
 
     static {
-        OsTools.printOsInfo();
-        DEFAULT_PATH = OsTools.initDefaultDir();
-        File defaultDir = new File(DEFAULT_PATH);
-        if (!defaultDir.exists()) {
-            int tryTimes = 0;
-            while (!defaultDir.mkdir() && tryTimes < 3) {
-                defaultDir.mkdir();
-                tryTimes++;
-            }
-            if (tryTimes == 3) {
-                LOGGER.error("[static code] 3次创建默认文件夹均失败，退出程序");
-                System.exit(-1);
-            } else {
-                DEFAULT_PATH = defaultDir.getAbsolutePath();
-            }
-        }
+        DEFAULT_PATH = OsTools.getDefaultDir("QrImages");
+        DEFAULT_PATH = OsTools.createDir(DEFAULT_PATH);
     }
 
 
@@ -108,6 +94,7 @@ public class ScanQrPage {
      * 基于Box布局的页面
      */
     public void scanQrPageByBox() {
+        LOGGER.info("[scanQrPageByBox] start...");
         jFrame = Frame.init(FRAME_TITLE, frameWidth, frameHeight);
         jFrame.setUndecorated(true);
         jFrame.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
@@ -123,6 +110,7 @@ public class ScanQrPage {
      * @return
      */
     public JPanel scanQrPagePanel() {
+        LOGGER.info("[scanQrPagePanel] start...");
         JPanel resultPanel = new JPanel(null);
 
         row1Panel = createRow1Panel("row1Panel");
@@ -223,7 +211,7 @@ public class ScanQrPage {
         JPanel panel = Panel.init(panelName, imgWidth, imgHeight);
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 //        panel.add(qrDecryptedTextArea);
-        JScrollPane scrollPane = TextArea.putIntoScrollbar(qrDecryptedTextArea, new Dimension(qrDecryptedTextAreaWidth-5, qrDecryptedTextAreaHeight-5));
+        JScrollPane scrollPane = TextArea.putIntoScrollbar(qrDecryptedTextArea, new Dimension(qrDecryptedTextAreaWidth - 5, qrDecryptedTextAreaHeight - 5));
         panel.add(scrollPane);
 
         return panel;
@@ -284,9 +272,10 @@ public class ScanQrPage {
 
     /**
      * 刷新图片标签
+     *
      * @param filename
      */
-    private void refreshImgLabel(String filename){
+    private void refreshImgLabel(String filename) {
         row3Panel.remove(0);
         imageLabel = null;
         imageLabel = Label.initImageLabel("imageLabel", imgWidth, imgHeight, filename);
@@ -297,15 +286,15 @@ public class ScanQrPage {
 
     private void doScanQrBtn() throws Exception {
         if (checkParams()) {
-            try{
+            try {
                 qrDecryptedText = QrCodeUtil.decode(choosedFile);
-                if (qrDecryptedText == null){
+                if (qrDecryptedText == null) {
                     JOptionPane.showMessageDialog(panel, NO_QR_IMAGE, CHOOSE_FILE_HINT, JOptionPane.INFORMATION_MESSAGE);
-                }else {
+                } else {
                     qrDecryptedTextArea.setText(qrDecryptedText);
                     row4Panel.validate();
                 }
-            }catch (NotFoundException nfe){
+            } catch (NotFoundException nfe) {
                 LOGGER.error("[doScanQrBtn] {}", NO_QR_IMAGE);
                 JOptionPane.showMessageDialog(panel, NO_QR_IMAGE, CHOOSE_FILE_HINT, JOptionPane.INFORMATION_MESSAGE);
             }

@@ -146,6 +146,7 @@ public class AesEncryptPage {
      * @return
      */
     public JPanel createAesEncryptPagePanel() {
+        LOGGER.info("[createAesEncryptPagePanel] start...");
 //        GuiDebugTools.setPrintBorderToggle(true);
         panel = new JPanel(null);
 

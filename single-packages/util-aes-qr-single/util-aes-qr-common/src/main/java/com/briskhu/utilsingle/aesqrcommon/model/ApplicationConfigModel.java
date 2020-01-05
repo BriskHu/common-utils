@@ -25,6 +25,20 @@ public class ApplicationConfigModel {
      */
     private LinkedHashMap<String, String> aesCorelativeList;
 
+    public ApplicationConfigModel() {
+    }
 
+    public ApplicationConfigModel(String password) {
+        this.password = password;
+    }
+
+    public ApplicationConfigModel(LinkedHashMap<String, String> aesCorelativeList) {
+        this.aesCorelativeList = aesCorelativeList;
+    }
+
+    public ApplicationConfigModel(String password, LinkedHashMap<String, String> aesCorelativeList) {
+        this.password = password;
+        this.aesCorelativeList = aesCorelativeList;
+    }
 
 }

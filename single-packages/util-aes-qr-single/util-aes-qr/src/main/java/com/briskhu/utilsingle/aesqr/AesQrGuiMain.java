@@ -84,7 +84,7 @@ public class AesQrGuiMain {
         tabbedPane.add(AES_DE_PAGE_TITLE, aesDecryptPage.createAesDecryptPagePanel());
         tabbedPane.add(CREATE_QR_PAGE_TITLE, createQrPage.createQrPagePanel());
         tabbedPane.add(SCAN_QR_PAGE_TITLE, scanQrPage.scanQrPagePanel());
-        tabbedPane.add(CODEBOOK_PAGE_TITLE, codebookPage.createBlankCodebookPage());
+        tabbedPane.add(CODEBOOK_PAGE_TITLE, codebookPage.createCodebookPage());
 
         tabbedPane.addChangeListener(new ChangeListener() {
             @Override
