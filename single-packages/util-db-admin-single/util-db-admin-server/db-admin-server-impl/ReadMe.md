@@ -158,7 +158,13 @@ http://127.0.0.1:9918/dbadmin/database/showFieldsByResult?dbName=iotservice_mclo
 ```
 
 
+## NEXT(后续将开发的功能) 
 
+1. 监控数据库访问者
+
+2. 监控指定表的操作记录
+
+3. 动态切换数据源
 
 
 
