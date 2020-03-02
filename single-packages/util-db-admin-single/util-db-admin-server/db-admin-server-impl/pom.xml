@@ -77,7 +77,6 @@
         <dependency>
             <groupId>com.briskhu.util</groupId>
             <artifactId>web-result</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
 
 
