@@ -1,5 +1,21 @@
 # 开发常用文档
 
+## 模块介绍
+本模块用来管理一些常用软件的配置、使用信息。模块目录结构如下所示
+```
+|-- ReadMe.md
+|-- config
+|   |-- maven
+|       |-- settings.xml
+|       |-- settingsAli.xml
+|       |-- settingsCompany.xml
+|-- pom.xml
+|-- script
+|   |-- shell
+
+```
+其中，ReadMe.md文档是模块的说明文档，config目录放置常用软件配置相关的文档，script目录放置一些常用脚本。
+
 
 ## Markdown文档编写
 
@@ -30,3 +46,6 @@
 </table>
 
 说明：上述写法在idea中可能显示不出预想的效果，但是在网页上会正常显示单元格合并的效果。
+
+
+
